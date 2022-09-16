@@ -1,3 +1,5 @@
+const path = require('path');
+
 const express = require('express');
 
 const app = express();
@@ -12,14 +14,15 @@ const app = express();
 //     res.send('<h1>Hello Mom!<h1>')
 // });
 
-app.use('/users', (req, res, next) => {
-    console.log('From "/user" middleware');
-    res.send('<p><ul><li>User 1</li><li>User 2</li><ul></p>')
-});
+// import index and users route
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
-app.use('/', (req, res, next) => {
-    console.log('From "/" middleware');
-    res.send('<h1>Hello there!</h1><h1>General Kenobi</h1><img src="https://i.pinimg.com/originals/40/74/60/407460925c9e419d82b93313f0b42f71.jpg"/>');
-});
+// make public/main static
+app.use(express.static(path.join(__dirname, 'public')));
+
+// use index and users routes
+app.use(usersRouter);
+app.use(indexRouter);
 
 app.listen(3000);
