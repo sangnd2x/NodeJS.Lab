@@ -1,28 +1,23 @@
 const path = require('path');
-
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-// app.use((req, res, next) => {
-//     console.log('First middleware');
-//     next();
-// });
+app.set('view engine', 'pug');
+app.set('views', 'views');
 
-// app.use((req, res, next) => {
-//     console.log('Second middleware');
-//     res.send('<h1>Hello Mom!<h1>')
-// });
+const adminData = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-// import index and users route
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')))
 
-// make public/main static
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/admin', adminData.routes);
+app.use(shopRoutes);
 
-// use index and users routes
-app.use(usersRouter);
-app.use(indexRouter);
+app.use((req, res, next) => {
+    res.status(404).render('404');
+});
 
-app.listen(3000);
+app.listen(3001);
