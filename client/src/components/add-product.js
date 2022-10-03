@@ -1,4 +1,5 @@
-import { useRef, useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../CSS/forms.css';
 import '../CSS/product.css';
 
@@ -10,46 +11,33 @@ function AddProduct() {
         price: '',
         description: ''
     });
-    // const render = useRef(true);
-
-    // useEffect(() => {
-    //     if (render.current) {
-    //         render.current = false;
-    //     } else {
-    //         fetch('http://localhost:5000/add-product', {
-    //             method: 'POST',
-    //             body: JSON.stringify(products),
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //     }
-    // }, [products]);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
     }
 
     const handleSubmit = (e) => {
+        e.preventDefault();
+
+        setProducts(prev => ([...prev, productDetails]));
+
         const url = 'http://localhost:5000/add-product';
         const options = {
             method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify(products),
+            body: JSON.stringify(productDetails),
             headers: {
-                'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json'
             }
         };
         
-        setProducts(prev => ([...prev, productDetails]));
-
         fetch(url, options).then(res => console.log(res)).catch(err => console.log(err));
 
-        e.preventDefault();
+        navigate('/shop');
     }
+
     console.log(productDetails);
-    console.log(products);
+
 
     return (
         <div>

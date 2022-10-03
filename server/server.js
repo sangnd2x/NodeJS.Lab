@@ -10,6 +10,7 @@ const adminRoute = require('./routes/admin');
 
 server.use(cors());
 
+// Tell server to expect json file
 server.use(express.json({
     type: ['application/json']
 }));

@@ -5,7 +5,7 @@ const shopController = require('../controllers/shop');
 
 const router = express.Router();
 
-// Get all products to render to fronend
+// Get all products to render to frontend => GET localhost:5000/products
 router.get('/products', shopController.getProducts);
 
 module.exports = router;
