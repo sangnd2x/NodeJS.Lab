@@ -8,14 +8,31 @@ function Shop() {
     useEffect(() => {
         fetch('http://localhost:5000/products').then(res => res.json()).then(data => {
             setProducts(data);
-        });
-    },[])
+        }).catch(err => console.log(err));
+    }, [])
     
-    console.log(products);
+    const addToCart = (productId) => {
+
+        const data = {
+            productId: productId
+        }
+        const url = 'http://localhost:5000/cart';
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        fetch(url, options).then(res => res.json()).catch(err => console.log(err));
+    }
+    
+
     return (
         <div className="grid">
             {products.map(product => (
-                <div className="card product-item" key={products.indexOf(product)}>
+                <div className="card product-item" key={product.id}>
                     <div className="card__header">
                         <h1 className="product__title">
                             { product.title }
@@ -34,6 +51,7 @@ function Shop() {
                     </div>
                     <div className="card__actions">
                         <a href="/" className="btn">Details</a>
+                        <a href="/cart" className="btn" onClick={() => addToCart(product.id)} >Add to Cart</a>
                     </div>
                 </div>
             ))

@@ -13,7 +13,7 @@ function Main() {
             <Nav />
             <Routes>
                 <Route path='/shop' element={<Shop />} />
-                <Route path='/product' element={<Product />} />
+                <Route path='/products' element={<Product />} />
                 <Route path='/orders' element={<Orders />} />
                 <Route path='/cart' element={<Cart />} />
                 <Route path='/add-product' element={<AddProduct />} />
