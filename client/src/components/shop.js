@@ -2,15 +2,7 @@ import { useState, useEffect } from "react";
 import '../CSS/product.css';
 import '../CSS/main.css';
 
-function Shop() {
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-        fetch('http://localhost:5000/products').then(res => res.json()).then(data => {
-            setProducts(data);
-        }).catch(err => console.log(err));
-    }, [])
-    
+function Shop(props) {
     const addToCart = (productId) => {
 
         const data = {
@@ -27,11 +19,26 @@ function Shop() {
 
         fetch(url, options).then(res => res.json()).catch(err => console.log(err));
     }
-    
+
+    // post a edit request to server
+    const handleEdit = (productId) => {
+        const id = {
+            productId: productId
+        };
+
+        fetch(`http://localhost:5000/edit-product/${id}?edit=true`, {
+            method: 'POST',
+            body: JSON.stringify(id),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json()).then(data => console.log(data)).catch(err => console.log(err));
+        console.log('clicked');
+    }
 
     return (
         <div className="grid">
-            {products.map(product => (
+            {props.products.map(product => (
                 <div className="card product-item" key={product.id}>
                     <div className="card__header">
                         <h1 className="product__title">
@@ -51,7 +58,8 @@ function Shop() {
                     </div>
                     <div className="card__actions">
                         <a href="/" className="btn">Details</a>
-                        <a href="/cart" className="btn" onClick={() => addToCart(product.id)} >Add to Cart</a>
+                        <a href="/cart" className="btn" onClick={() => addToCart(product.id)}>Add to Cart</a>
+                        <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
                     </div>
                 </div>
             ))

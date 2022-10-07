@@ -15,6 +15,9 @@ server.use(express.json({
     type: ['application/json']
 }));
 
+server.set('view engine', 'ejs');
+server.set('views', 'views');
+    ;
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(express.static(path.join(__dirname, 'public')));
 

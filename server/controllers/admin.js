@@ -1,5 +1,15 @@
 const Product = require('../models/products');
 
+exports.getProducts = (req, res, next) => {
+    Product.fetchAll(products => {
+      res.render('admin/products', {
+        prods: products,
+        pageTitle: 'Admin Products',
+        path: '/admin/products'
+      });
+    });
+  };
+
 exports.postAddProduct = (req, res, next) => {
     console.log('from admin controller', req.body);
     const title = req.body.title;
@@ -15,4 +25,34 @@ exports.postAddProduct = (req, res, next) => {
     res.setHeader("Content-Type", "application/json");
     res.write(JSON.stringify({ msg: 'success' }));
     res.end();
+}
+
+exports.getEditProduct = (req, res, next) => {
+  console.log(req.query);
+  const editMode = req.query.edit;
+  const prodId = req.body.productId;
+  console.log(prodId);
+  console.log(editMode);
+  if (!editMode) {
+      res.redirect('/');
+  }
+  const product = Product.findById(prodId, product => {
+    return product;
+  });
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "application/json");
+  res.send(product);
+  res.end();
+}
+
+exports.sendEditProduct = (req, res, next) => {
+  const isEdit = req.query.edit;
+  const id = req.params.productId;
+  if (!isEdit) {
+    return res.redirect('/');
+  }
+  Product.findById(id, product => {
+    res.send(product);
+    res.end();
+  });
 }
