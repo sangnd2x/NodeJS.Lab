@@ -36,8 +36,6 @@ function AddProduct() {
         navigate('/shop');
     }
 
-    console.log(productDetails);
-
 
     return (
         <div>

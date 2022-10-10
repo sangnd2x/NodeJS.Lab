@@ -1,8 +1,18 @@
 import { useState, useEffect } from "react";
+import axios from 'axios';
 import '../CSS/product.css';
 import '../CSS/main.css';
 
 function Shop(props) {
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+        const fetch = async () => {
+            const result = await axios('http://localhost:5000/products').catch(err => console.log(err));
+            setProducts(result.data);
+        }
+        fetch();
+    }, []);
+
     const addToCart = (productId) => {
 
         const data = {
@@ -38,7 +48,7 @@ function Shop(props) {
 
     return (
         <div className="grid">
-            {props.products.map(product => (
+            {products.map(product => (
                 <div className="card product-item" key={product.id}>
                     <div className="card__header">
                         <h1 className="product__title">

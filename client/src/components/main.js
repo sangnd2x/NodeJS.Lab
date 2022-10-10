@@ -7,43 +7,29 @@ import Cart from './cart';
 import AddProduct from './add-product';
 import AdminProduct from './admin-product';
 import EditProduct from './edit-product';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 function Main() {
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-        const fetch = async () => {
-            const result = await axios('http://localhost:5000/products');
-
-            setProducts(result.data);
-        }
-
-        fetch();
-    }, []);
-
     const NewEditProduct = () => {
         const params = useParams();
-        console.log(params)
         return (
-            <EditProduct product={products.filter(product => product.id === params.productId)} />
+            <EditProduct productId={params.productId} />
         );
     }
 
-    
     return (
         <div>
             <Nav />
             <Routes>
-                <Route path='/shop' element={<Shop products={products} />} />
+                <Route path='/shop' element={<Shop/>} />
                 <Route path='/products' element={<Product />} />
                 <Route path='/orders' element={<Orders />} />
                 <Route path='/cart' element={<Cart />} />
                 <Route path='/add-product' element={<AddProduct />} />
                 <Route path='/admin-product' element={<AdminProduct />} />
                 <Route path='/edit-product/:productId' element={<NewEditProduct />} />
-                <Route index path='/' element={<Shop products={products}/>} />
+                <Route index path='/' element={<Shop/>} />
             </Routes>
         </div>
     );

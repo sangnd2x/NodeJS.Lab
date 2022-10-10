@@ -12,10 +12,10 @@ router.get('/admin/products', adminController.getProducts);
 // POST localhost:5000/add-product 
 router.post('/add-product', adminController.postAddProduct);
 
-// GET edit product
-router.post('/edit-product/:productId', adminController.getEditProduct);
+// GET edit product localhost:5000/edit-product/:productId
+router.get('/edit-product/:productId', adminController.getEditProduct);
 
-// GET edit product
-router.get('/edit-product/:productId', adminController.sendEditProduct);
+// POST edited product
+router.post('/edit-product', adminController.postEditedProduct);
 
 module.exports = router;

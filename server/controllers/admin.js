@@ -1,15 +1,13 @@
 const Product = require('../models/products');
 
+// Fetch all products
 exports.getProducts = (req, res, next) => {
     Product.fetchAll(products => {
-      res.render('admin/products', {
-        prods: products,
-        pageTitle: 'Admin Products',
-        path: '/admin/products'
-      });
+      res.send(products);
     });
   };
 
+  // Add new product
 exports.postAddProduct = (req, res, next) => {
     console.log('from admin controller', req.body);
     const title = req.body.title;
@@ -17,7 +15,7 @@ exports.postAddProduct = (req, res, next) => {
     const price = req.body.price;
     const description = req.body.description;
     // order of these args have to match the order in model/products
-    const product = new Product(title, imageUrl, description, price);
+    const product = new Product(null, title, imageUrl, description, price);
     product.save();
 
     // Send response so the frontend knows that POST request succeed
@@ -27,25 +25,8 @@ exports.postAddProduct = (req, res, next) => {
     res.end();
 }
 
+// Get selected edit product
 exports.getEditProduct = (req, res, next) => {
-  console.log(req.query);
-  const editMode = req.query.edit;
-  const prodId = req.body.productId;
-  console.log(prodId);
-  console.log(editMode);
-  if (!editMode) {
-      res.redirect('/');
-  }
-  const product = Product.findById(prodId, product => {
-    return product;
-  });
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "application/json");
-  res.send(product);
-  res.end();
-}
-
-exports.sendEditProduct = (req, res, next) => {
   const isEdit = req.query.edit;
   const id = req.params.productId;
   if (!isEdit) {
@@ -55,4 +36,18 @@ exports.sendEditProduct = (req, res, next) => {
     res.send(product);
     res.end();
   });
+}
+
+// Post edited product
+exports.postEditedProduct = (req, res, next) => {
+  console.log(req.body);
+  const prodId = req.body.id;
+  const updatedTitle = req.body.title;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedPrice = req.body.price;
+  const updatedDescription = req.body.description;
+  const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
+  updatedProduct.save();
+  res.statusCode = 200;
+  res.end();
 }
