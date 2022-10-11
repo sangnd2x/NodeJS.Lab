@@ -30,22 +30,6 @@ function Shop(props) {
         fetch(url, options).then(res => res.json()).catch(err => console.log(err));
     }
 
-    // post a edit request to server
-    const handleEdit = (productId) => {
-        const id = {
-            productId: productId
-        };
-
-        fetch(`http://localhost:5000/edit-product/${id}?edit=true`, {
-            method: 'POST',
-            body: JSON.stringify(id),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json()).then(data => console.log(data)).catch(err => console.log(err));
-        console.log('clicked');
-    }
-
     return (
         <div className="grid">
             {products.map(product => (
@@ -69,7 +53,6 @@ function Shop(props) {
                     <div className="card__actions">
                         <a href="/" className="btn">Details</a>
                         <a href="/cart" className="btn" onClick={() => addToCart(product.id)}>Add to Cart</a>
-                        <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
                     </div>
                 </div>
             ))

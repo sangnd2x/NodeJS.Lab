@@ -11,4 +11,7 @@ router.get('/products', shopController.getProducts);
 // Add to cart
 router.post('/cart', shopController.postCart);
 
+// Fetch all products from cart => GET //localhost:5000/cart
+router.get('/cart', shopController.getCart);
+
 module.exports = router;

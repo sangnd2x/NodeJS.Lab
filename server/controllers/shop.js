@@ -15,3 +15,18 @@ exports.postCart = (req, res, next) => {
     });
     res.statusCode = 200;
 };
+
+exports.getCart = (req, res, next) => {
+    Cart.getCart(cart => {
+        Product.fetchAll(products => {
+            const cartProducts = [];
+            for (let product of products) {
+                const productData = cart.products.find(prod => prod.id === product.id);
+                if (productData) {
+                    cartProducts.push({ productData: product, qty: productData.qty });
+                }
+            }
+            res.send(cartProducts);
+        });
+    });
+}
