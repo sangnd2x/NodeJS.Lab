@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../CSS/forms.css';
-import '../CSS/product.css';
 
 function AddProduct() {
-    const [products, setProducts] = useState([]);
     const [productDetails, setProductDetails] = useState({
         title: '',
         imageUrl: '',
@@ -16,11 +13,10 @@ function AddProduct() {
     const handleChange = (e) => {
         setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
     }
+    console.log('from add product', productDetails);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        setProducts(prev => ([...prev, productDetails]));
 
         const url = 'http://localhost:5000/add-product';
         const options = {
@@ -34,6 +30,7 @@ function AddProduct() {
         fetch(url, options).then(res => console.log(res)).catch(err => console.log(err));
 
         navigate('/shop');
+
     }
 
 

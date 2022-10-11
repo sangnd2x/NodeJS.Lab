@@ -1,17 +1,28 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 function AdminProduct() {
     const [products, setProducts] = useState([]);
+    const navigate = useNavigate();
 
     // fetch all products from server
     useEffect(() => {
-        const fetch = async () => {
-            const result = await axios('http://localhost:5000/products').catch(err => console.log(err));
-            setProducts(result.data);
-        }
-        fetch();
+        axios.get('http://localhost:5000/products').then(res => setProducts(res.data)).catch(err => console.log(err));
     }, []);
+
+    // delete product
+    const handleDelete = (productId) => {
+        const data = {
+            productId: productId
+        }
+
+        const url = 'http://localhost:5000/delete-product';
+
+        axios.post(url, data).then(res => console.log(res)).catch(err => console.log(err));
+
+        navigate('/admin-products')
+    }
 
     return (
         <div className="grid">
@@ -34,8 +45,9 @@ function AdminProduct() {
                         </p>
                     </div>
                     <div className="card__actions">
-                        <a href="/" className="btn">Details</a>
+                        <button href="/" className="btn">Details</button>
                         <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
+                        <button type="submit" className="btn" onClick={() => handleDelete(product.id)}>Delete</button>
                     </div>
                 </div>
             ))

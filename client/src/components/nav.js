@@ -10,7 +10,7 @@ function Nav() {
                 <li className='main-header__item'><a href="/cart">Cart</a></li>
                 <li className='main-header__item'><a href="/orders">Orders</a></li>
                 <li className='main-header__item'><a href="/add-product">Add Product</a></li>
-                <li className='main-header__item'><a href="/admin-product">Admin Products</a></li>
+                <li className='main-header__item'><a href="/admin-products">Admin Products</a></li>
             </ul>
             </nav>
       </div>

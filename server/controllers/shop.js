@@ -26,7 +26,9 @@ exports.getCart = (req, res, next) => {
                     cartProducts.push({ productData: product, qty: productData.qty });
                 }
             }
+            res.statusCode = 200;
             res.send(cartProducts);
+            res.end();
         });
     });
 }

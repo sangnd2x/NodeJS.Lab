@@ -1,4 +1,5 @@
 const Product = require('../models/products');
+const Cart = require('../models/cart');
 
 // Fetch all products
 exports.getProducts = (req, res, next) => {
@@ -49,5 +50,26 @@ exports.postEditedProduct = (req, res, next) => {
   const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
   updatedProduct.save();
   res.statusCode = 200;
+  res.end();
+}
+
+exports.postDeletedProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  console.log(prodId);
+  Product.deleteProductById(prodId);
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "application/json");
+  res.write(JSON.stringify({ msg: 'delete succeed' }));
+  res.end();
+}
+
+exports.postCartDeletedProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.findById(prodId, product => {
+    Cart.deleteProduct(prodId, product.price);
+  });
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "application/json");
+  res.write(JSON.stringify({ msg: 'delete succeed' }));
   res.end();
 }

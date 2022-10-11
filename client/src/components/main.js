@@ -7,8 +7,9 @@ import Cart from './cart';
 import AddProduct from './add-product';
 import AdminProduct from './admin-product';
 import EditProduct from './edit-product';
-import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import '../CSS/forms.css';
+import '../CSS/product.css';
+import '../CSS/main.css';
 
 function Main() {
     const NewEditProduct = () => {
@@ -27,7 +28,7 @@ function Main() {
                 <Route path='/orders' element={<Orders />} />
                 <Route path='/cart' element={<Cart />} />
                 <Route path='/add-product' element={<AddProduct />} />
-                <Route path='/admin-product' element={<AdminProduct />} />
+                <Route path='/admin-products' element={<AdminProduct />} />
                 <Route path='/edit-product/:productId' element={<NewEditProduct />} />
                 <Route index path='/' element={<Shop/>} />
             </Routes>

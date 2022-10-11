@@ -5,13 +5,12 @@ import '../CSS/main.css';
 
 function Shop(props) {
     const [products, setProducts] = useState([]);
+
     useEffect(() => {
-        const fetch = async () => {
-            const result = await axios('http://localhost:5000/products').catch(err => console.log(err));
-            setProducts(result.data);
-        }
-        fetch();
+        axios.get('http://localhost:5000/products').then(res => setProducts(res.data)).catch(err => console.log(err));
     }, []);
+
+    console.log('from shop', products);
 
     const addToCart = (productId) => {
 
