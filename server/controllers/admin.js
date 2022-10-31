@@ -17,13 +17,15 @@ exports.postAddProduct = (req, res, next) => {
     const description = req.body.description;
     // order of these args have to match the order in model/products
     const product = new Product(null, title, imageUrl, description, price);
-    product.save();
-
-    // Send response so the frontend knows that POST request succeed
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
-    res.write(JSON.stringify({ msg: 'success' }));
-    res.end();
+    product.save()
+      .then(() => {
+        // Send response so the frontend knows that POST request succeed
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.write(JSON.stringify({ msg: 'success' }));
+        res.end();
+      })
+      .catch(err => console.log(err));    
 }
 
 // Get selected edit product
