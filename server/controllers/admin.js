@@ -33,9 +33,9 @@ exports.getEditProduct = (req, res, next) => {
   if (!isEdit) {
     return res.redirect('/');
   }
-  Product.findById(id)
-    .then(product => {
-      res.send(product);
+  Product.findAll({where: {id: id}})
+    .then(products => {
+      res.send(products[0]);
     })
     .catch(err => console.log(err));
 }
