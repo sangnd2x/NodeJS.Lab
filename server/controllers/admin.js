@@ -3,29 +3,27 @@ const Cart = require('../models/cart');
 
 // Fetch all products
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll(products => {
+  Product.findAll()
+    .then(products => {
       res.send(products);
-    });
+    }).catch(err => console.log(err));
   };
 
   // Add new product
 exports.postAddProduct = (req, res, next) => {
-    console.log('from admin controller', req.body);
-    const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
-    const price = req.body.price;
-    const description = req.body.description;
-    // order of these args have to match the order in model/products
-    const product = new Product(null, title, imageUrl, description, price);
-    product.save()
-      .then(() => {
-        // Send response so the frontend knows that POST request succeed
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.write(JSON.stringify({ msg: 'success' }));
-        res.end();
-      })
-      .catch(err => console.log(err));    
+  const title = req.body.title;
+  const imageUrl = req.body.imageUrl;
+  const price = req.body.price;
+  const description = req.body.description;
+  // order of these args have to match the order in model/products
+  Product.create({
+    title: title,
+    price: price,
+    imageUrl: imageUrl,
+    description: description
+  })
+    .then(results => console.log('added product'))
+    .catch();
 }
 
 // Get selected edit product
@@ -35,10 +33,11 @@ exports.getEditProduct = (req, res, next) => {
   if (!isEdit) {
     return res.redirect('/');
   }
-  Product.findById(id, product => {
-    res.send(product);
-    res.end();
-  });
+  Product.findById(id)
+    .then(product => {
+      res.send(product);
+    })
+    .catch(err => console.log(err));
 }
 
 // Post edited product
@@ -49,20 +48,31 @@ exports.postEditedProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDescription = req.body.description;
-  const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
-  updatedProduct.save();
-  res.statusCode = 200;
-  res.end();
+  Product.findById(prodId)
+    .then(product => {
+      product.title = updatedTitle,
+      product.imageUrl = updatedImageUrl,
+      product.price = updatedPrice,
+      product.description = updatedDescription
+      return product.save();
+    })
+    .then(results => res.statusCode = 200)
+    .catch(err => console.log(err));
 }
 
 exports.postDeletedProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  console.log(prodId);
-  Product.deleteProductById(prodId);
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "application/json");
-  res.write(JSON.stringify({ msg: 'delete succeed' }));
-  res.end();
+  Product.findById(prodId)
+    .then(product => {
+      return product.destroy();
+    })
+    .then(results => {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.write(JSON.stringify({ msg: 'delete succeed' }));
+    res.end();
+    })
+    .catch(err => console.log(err));
 }
 
 exports.postCartDeletedProduct = (req, res, next) => {

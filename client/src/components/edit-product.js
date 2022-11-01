@@ -52,9 +52,12 @@ function EditProduct(props) {
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(res => res.json()).catch(err => console.log(err));
+        }).then(res => {
+            res.json();
+            navigate('/admit-product');
+        }).catch(err => console.log(err));
 
-        // navigate('/admit-product');
+        ;
        
     }
 

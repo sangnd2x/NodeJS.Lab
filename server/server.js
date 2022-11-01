@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const sequelize = require('./util/databse');
 
 const server = express();
 
@@ -24,4 +25,6 @@ server.use(express.static(path.join(__dirname, 'public')));
 server.use(adminRoute);
 server.use(shopRoute);
 
-server.listen(5000);
+sequelize.sync()
+    .then(results => server.listen(5000))
+    .catch(err => console.log(err));

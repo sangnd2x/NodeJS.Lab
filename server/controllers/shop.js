@@ -2,8 +2,8 @@ const Product = require('../models/products');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
-        .then(([rows]) => {
+    Product.findAll()
+        .then((rows) => {
             res.send(rows);
         })
         .catch(err => console.log(err));

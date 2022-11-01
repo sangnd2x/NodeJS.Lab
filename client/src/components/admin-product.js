@@ -19,9 +19,11 @@ function AdminProduct() {
 
         const url = 'http://localhost:5000/delete-product';
 
-        axios.post(url, data).then(res => console.log(res)).catch(err => console.log(err));
-
-        navigate('/admin-products')
+        axios.post(url, data).then(res => {
+            res.json();
+            navigate('/admin-products');
+        }).catch(err => console.log(err));
+        
     }
 
     return (
