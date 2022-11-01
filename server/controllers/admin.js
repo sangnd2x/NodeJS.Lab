@@ -56,7 +56,12 @@ exports.postEditedProduct = (req, res, next) => {
       product.description = updatedDescription
       return product.save();
     })
-    .then(results => res.statusCode = 200)
+    .then(results => {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.write(JSON.stringify({ msg: 'edit succeed' }));
+      res.end();
+    })
     .catch(err => console.log(err));
 }
 
