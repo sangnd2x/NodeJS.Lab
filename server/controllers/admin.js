@@ -3,10 +3,12 @@ const Cart = require('../models/cart');
 
 // Fetch all products
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.user.getProducts()
+  // Product.findAll()
     .then(products => {
       res.send(products);
-    }).catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
   };
 
   // Add new product
@@ -16,14 +18,14 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   // order of these args have to match the order in model/products
-  Product.create({
+  req.user.createProduct({
     title: title,
     price: price,
     imageUrl: imageUrl,
     description: description
   })
     .then(results => console.log('added product'))
-    .catch();
+    .catch();;
 }
 
 // Get selected edit product
@@ -33,9 +35,14 @@ exports.getEditProduct = (req, res, next) => {
   if (!isEdit) {
     return res.redirect('/');
   }
-  Product.findAll({where: {id: id}})
+  req.user.getProducts({where : { id : id }})
+  // Product.findAll({where: {id: id}})
     .then(products => {
-      res.send(products[0]);
+      const product = products[0];
+      if (!product) {
+        return
+      }
+      res.send(product);
     })
     .catch(err => console.log(err));
 }
@@ -81,13 +88,3 @@ exports.postDeletedProduct = (req, res, next) => {
     .catch(err => console.log(err));
 }
 
-exports.postCartDeletedProduct = (req, res, next) => {
-  const prodId = req.body.productId;
-  Product.findById(prodId, product => {
-    Cart.deleteProduct(prodId, product.price);
-  });
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "application/json");
-  res.write(JSON.stringify({ msg: 'delete succeed' }));
-  res.end();
-}

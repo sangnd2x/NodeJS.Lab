@@ -34,35 +34,58 @@ function Cart() {
             .then(data => console.log(data))
             .catch(err => console.log(err));
     }
+    
+    // Order
+    const handleOrder = () => {
+        const url = 'http://localhost:5000/create-order';
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        fetch(url, options)
+            .then(res => console.log(res))
+            .then(data => console.log(data))
+            .catch(err => console.log(err));
+    }
 
     return (
         <div className="grid">
             {products.map(product => (
-                <div className="card product-item" key={product.productData.id}>
+                <div className="card product-item" key={product.id}>
                     <div className="card__header">
                         <h1 className="product__title">
-                            { product.productData.title }
+                            { product.title }
                         </h1>
                     </div>
                     <div className="card__image">
-                        <img src={product.productData.imageUrl} alt={product.productData.title}/>
+                        <img src={product.imageUrl} alt={product.title}/>
                     </div>
                     <div className="card__content">
                         <h2 className="product__price">$
-                            { product.productData.price }
+                            { product.price }
                         </h2>
                         <p className="product__description">
-                            { product.productData.description }
+                            { product.description }
+                        </p>
+                        <p className="product__description">
+                            Quantity: { product.cartItem.quantity }
                         </p>
                     </div>
                     <div className="card__actions">
                         <a href="/" className="btn">Details</a>
-                        <a href={`/edit-product/${product.productData.id}`} className="btn">Edit</a>
-                        <button className="btn" onClick={() => handleDelete(product.productData.id)}>Delete</button>
+                        <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
+                        <button className="btn" onClick={() => handleDelete(product.id)}>Delete</button>
                     </div>
                 </div>
                 ))
             }
+            <form>
+                <button type="submit" className="btn" onClick={() => handleOrder()}>Order Now!</button>
+            </form>
         </div>
     );
 }

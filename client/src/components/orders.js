@@ -1,6 +1,80 @@
+import { useEffect, useState } from "react";
+
 function Orders() {
+    const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/order')
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                setOrders(data);
+            })
+            .catch(err => console.log(err));
+    },[]);
+
     return (
-        <h2>Orders</h2>
+        <div className="grid">
+            {orders.map(order => (
+                <div key={order.id}>
+                    {order.products.map(product => (
+                        <div className="card product-item" key={product.id}>
+                        <div className="card__header">
+                            <h1 className="product__title">
+                                { product.title }
+                            </h1>
+                        </div>
+                        <div className="card__image">
+                            <img src={product.imageUrl} alt={product.title}/>
+                        </div>
+                        <div className="card__content">
+                            <h2 className="product__price">$
+                                { product.price }
+                            </h2>
+                            <p className="product__description">
+                                { product.description }
+                            </p>
+                            <p className="product__description">
+                                Quantity: { product.orderItem.quantity }
+                            </p>
+                        </div>
+                        <div className="card__actions">
+                            <a href="/" className="btn">Details</a>
+                            <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
+                            <button className="btn">Delete</button>
+                        </div>
+                    </div>
+                    ))}
+                </div>
+                // <div className="card product-item" key={product.products.id}>
+                //     <div className="card__header">
+                //         <h1 className="product__title">
+                //             { product.products.title }
+                //         </h1>
+                //     </div>
+                //     <div className="card__image">
+                //         <img src={product.products.imageUrl} alt={product.products.title}/>
+                //     </div>
+                //     <div className="card__content">
+                //         <h2 className="product__price">$
+                //             { product.products.price }
+                //         </h2>
+                //         <p className="product__description">
+                //             { product.products.description }
+                //         </p>
+                //         <p className="product__description">
+                //             Quantity: { product.products.orderItem.quantity }
+                //         </p>
+                //     </div>
+                //     <div className="card__actions">
+                //         <a href="/" className="btn">Details</a>
+                //         <a href={`/edit-product/${product.products.id}`} className="btn">Edit</a>
+                //         <button className="btn">Delete</button>
+                //     </div>
+                // </div>
+                ))
+            }
+        </div>
     );
 }
 

@@ -14,4 +14,13 @@ router.post('/cart', shopController.postCart);
 // Fetch all products from cart => GET //localhost:5000/cart
 router.get('/cart', shopController.getCart);
 
+// POST cart deleted product
+router.post('/cart/delete-product', shopController.postCartDeletedProduct);
+
+// POST cart to order
+router.post('/create-order', shopController.postOrders);
+
+// GET order items
+router.get('/order', shopController.getOrders);
+
 module.exports = router;
