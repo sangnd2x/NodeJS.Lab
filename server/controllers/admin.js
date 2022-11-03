@@ -1,5 +1,8 @@
+const mongodb = require('mongodb');
 const Product = require('../models/products');
 const Cart = require('../models/cart');
+
+const ObjectId = mongodb.ObjectId;
 
 // Fetch all products
 exports.getProducts = (req, res, next) => {
@@ -18,12 +21,8 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   // order of these args have to match the order in model/products
-  req.user.createProduct({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description
-  })
+  const product = new Product(title, price, description, imageUrl);
+  product.save()
     .then(results => console.log('added product'))
     .catch();;
 }
@@ -35,15 +34,8 @@ exports.getEditProduct = (req, res, next) => {
   if (!isEdit) {
     return res.redirect('/');
   }
-  req.user.getProducts({where : { id : id }})
-  // Product.findAll({where: {id: id}})
-    .then(products => {
-      const product = products[0];
-      if (!product) {
-        return
-      }
-      res.send(product);
-    })
+  Product.findById(id)
+    .then(product => res.send(product))
     .catch(err => console.log(err));
 }
 
@@ -55,14 +47,13 @@ exports.postEditedProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDescription = req.body.description;
-  Product.findById(prodId)
-    .then(product => {
-      product.title = updatedTitle,
-      product.imageUrl = updatedImageUrl,
-      product.price = updatedPrice,
-      product.description = updatedDescription
-      return product.save();
-    })
+  const product = new Product(
+    updatedTitle,
+    updatedPrice,
+    updatedDescription,
+    updatedImageUrl,
+    prodId);
+  product.save()
     .then(results => {
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
@@ -75,10 +66,7 @@ exports.postEditedProduct = (req, res, next) => {
 // POST delete product
 exports.postDeletedProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId)
-    .then(product => {
-      return product.destroy();
-    })
+  Product.deleteById(prodId)
     .then(results => {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");

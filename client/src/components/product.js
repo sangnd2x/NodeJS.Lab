@@ -30,7 +30,7 @@ function Product() {
     return (
         <div className="grid">
             {products.map(product => (
-                <div className="card product-item" key={product.id}>
+                <div className="card product-item" key={product._id}>
                     <div className="card__header">
                         <h1 className="product__title">
                             { product.title }

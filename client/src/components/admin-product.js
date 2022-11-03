@@ -20,7 +20,6 @@ function AdminProduct() {
         const url = 'http://localhost:5000/delete-product';
 
         axios.post(url, data).then(res => {
-            res.json();
             navigate('/admin-products');
         }).catch(err => console.log(err));
         
@@ -29,7 +28,7 @@ function AdminProduct() {
     return (
         <div className="grid">
             {products.map(product => (
-                <div className="card product-item" key={product.id}>
+                <div className="card product-item" key={product._id}>
                     <div className="card__header">
                         <h1 className="product__title">
                             { product.title }
@@ -48,8 +47,8 @@ function AdminProduct() {
                     </div>
                     <div className="card__actions">
                         <button href="/" className="btn">Details</button>
-                        <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
-                        <button type="submit" className="btn" onClick={() => handleDelete(product.id)}>Delete</button>
+                        <a href={`/edit-product/${product._id}`} className="btn">Edit</a>
+                        <button type="submit" className="btn" onClick={() => handleDelete(product._id)}>Delete</button>
                     </div>
                 </div>
             ))

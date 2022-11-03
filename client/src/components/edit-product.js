@@ -25,13 +25,13 @@ function EditProduct(props) {
 
         fetch();
         setProductDetails({
-            id: product.id,
+            id: product._id,
             title: product.title,
             imageUrl: product.imageUrl,
             price: product.price,
             description: product.description
         })
-    },[props.productId, product.id, product.title, product.imageUrl, product.price, product.description]);
+    },[props.productId, product._id, product.title, product.imageUrl, product.price, product.description]);
 
     
 
@@ -53,12 +53,8 @@ function EditProduct(props) {
                 'Content-Type': 'application/json'
             }
         }).then(res => {
-            res.json();
-            navigate('/admit-product');
+            navigate('/admin-product');
         }).catch(err => console.log(err));
-
-        ;
-       
     }
 
     return (
@@ -81,7 +77,7 @@ function EditProduct(props) {
                         <textarea name="description" id="description" rows="5" defaultValue={product.description} onChange={handleChange}></textarea>
                     </div>
                     <div className="form-control">
-                    <input type="hidden" name="productId" id="productId" defaultValue={product.id} onChange={handleChange} />
+                    <input type="hidden" name="productId" id="productId" defaultValue={product._id} onChange={handleChange} />
                     </div>
                     <button className="btn" type="submit" onClick={handleUpdate}>Update Product</button>
                 </form>
