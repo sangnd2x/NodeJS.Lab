@@ -2,13 +2,14 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+
 const mongoose = require('mongoose');
 const User = require('./models/user');
 
 const server = express();
 
-const shopRoute = require('./routes/shop');
 const adminRoute = require('./routes/admin');
+const shopRoute = require('./routes/shop');
 
 server.use(cors());
 
@@ -24,7 +25,7 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use(express.static(path.join(__dirname, 'public')));
 
 server.use((req, res, next) => {
-    User.findById('6364c1e1a96c039f2d5d8c38')
+    User.findById('6364d72d23c6f0f37bf7c77f')
         .then(user => {
             req.user = user;
             next();

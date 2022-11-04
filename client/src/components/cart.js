@@ -59,21 +59,21 @@ function Cart() {
     return (
         <div className="grid">
             {products.map(product => (
-                <div className="card product-item" key={product._id}>
+                <div className="card product-item" key={product.productId._id}>
                     <div className="card__header">
                         <h1 className="product__title">
-                            { product.title }
+                            { product.productId.title }
                         </h1>
                     </div>
                     <div className="card__image">
-                        <img src={product.imageUrl} alt={product.title}/>
+                        <img src={product.productId.imageUrl} alt={product.productId.title}/>
                     </div>
                     <div className="card__content">
                         <h2 className="product__price">$
-                            { product.price }
+                            { product.productId.price }
                         </h2>
                         <p className="product__description">
-                            { product.description }
+                            { product.productId.description }
                         </p>
                         <p className="product__description">
                             Quantity: { product.quantity }
@@ -82,7 +82,7 @@ function Cart() {
                     <div className="card__actions">
                         <a href="/" className="btn">Details</a>
                         <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
-                        <button className="btn" onClick={() => handleDelete(product._id)}>Delete</button>
+                        <button className="btn" onClick={() => handleDelete(product.productId._id)}>Delete</button>
                     </div>
                 </div>
                 ))

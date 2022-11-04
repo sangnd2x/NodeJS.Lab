@@ -1,7 +1,10 @@
 const Product = require('../models/products');
+const mongoose = require('mongoose');
 
 exports.getIndex = (req, res, next) => {
-    Product.find()
+    Product
+        .find()
+        .populate('userId')
         .then(products => {
             res.send(products);
         })
@@ -20,17 +23,17 @@ exports.postCart = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
     req.user
-        .getCart()
-        .then(cart => {
-            res.send(cart);
+        .populate('cart.items.productId')
+        .then(user => {
+            res.send(user.cart.items);
         })
-        .catch();
+        .catch(err => console.log(err));
 }
 
 exports.postCartDeletedProduct = (req, res, next) => {
     const prodId = req.body.productId;
     req.user
-        .deleteItemFromCart(prodId)
+        .removeFromCart(prodId)
         .then(results => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");

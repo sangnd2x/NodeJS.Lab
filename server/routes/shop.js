@@ -8,14 +8,14 @@ const router = express.Router();
 // Get all products to render to frontend => GET localhost:5000/products
 router.get('/products', shopController.getIndex);
 
-// // Add to cart
-// router.post('/cart', shopController.postCart);
+// Add to cart
+router.post('/cart', shopController.postCart);
 
-// // Fetch all products from cart => GET //localhost:5000/cart
-// router.get('/cart', shopController.getCart);
+// Fetch all products from cart => GET //localhost:5000/cart
+router.get('/cart', shopController.getCart);
 
-// // POST cart deleted product
-// router.post('/cart/delete-product', shopController.postCartDeletedProduct);
+// POST cart deleted product
+router.post('/cart/delete-product', shopController.postCartDeletedProduct);
 
 // // POST cart to order
 // router.post('/create-order', shopController.postOrders);
