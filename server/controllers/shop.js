@@ -1,7 +1,7 @@
 const Product = require('../models/products');
 
-exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
+exports.getIndex = (req, res, next) => {
+    Product.find()
         .then(products => {
             res.send(products);
         })

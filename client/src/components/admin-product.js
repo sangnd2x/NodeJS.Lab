@@ -8,7 +8,7 @@ function AdminProduct() {
 
     // fetch all products from server
     useEffect(() => {
-        axios.get('http://localhost:5000/products').then(res => setProducts(res.data)).catch(err => console.log(err));
+        axios.get('http://localhost:5000/admin/products').then(res => setProducts(res.data)).catch(err => console.log(err));
     }, []);
 
     // delete product

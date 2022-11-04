@@ -1,13 +1,11 @@
-const mongodb = require('mongodb');
 const Product = require('../models/products');
-
-const ObjectId = mongodb.ObjectId;
 
 // Fetch all products
 exports.getProducts = (req, res, next) => {
-  req.user.getProducts()
-  // Product.findAll()
+  Product.find()
+    .populate('userId')
     .then(products => {
+      console.log(products);
       res.send(products);
     })
     .catch(err => console.log(err));
@@ -20,8 +18,15 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   // order of these args have to match the order in model/products
-  const product = new Product(title, price, description, imageUrl, null, req.user._id);
-  product.save()
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+    userId: req.user
+  });
+  product
+    .save()
     .then(results => console.log('added product'))
     .catch();;
 }
@@ -46,26 +51,30 @@ exports.postEditedProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDescription = req.body.description;
-  const product = new Product(
-    updatedTitle,
-    updatedPrice,
-    updatedDescription,
-    updatedImageUrl,
-    prodId);
-  product.save()
-    .then(results => {
+
+  Product
+    .findById(prodId)
+    .then(product => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.imageUrl = updatedImageUrl;
+      product.description = updatedDescription;
+      return product.save();
+    })
+    .then(result => {
+      console.log('Updated');
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.write(JSON.stringify({ msg: 'edit succeed' }));
       res.end();
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err))
 }
 
 // POST delete product
 exports.postDeletedProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId)
+  Product.findByIdAndRemove(prodId)
     .then(results => {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
