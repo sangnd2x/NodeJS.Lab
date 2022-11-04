@@ -42,7 +42,7 @@ function Shop() {
                         <img src={product.imageUrl} alt={product.title}/>
                     </div>
                     <div className="card__content">
-                        <h2 className="product__price">$
+                        <h2 className="product__price">
                             { product.price }
                         </h2>
                         <p className="product__description">
@@ -51,7 +51,7 @@ function Shop() {
                     </div>
                     <div className="card__actions">
                         <a href="/" className="btn">Details</a>
-                        <a href="/cart" className="btn" onClick={() => addToCart(product.id)}>Add to Cart</a>
+                        <a href="/cart" className="btn" onClick={() => addToCart(product._id)}>Add to Cart</a>
                     </div>
                 </div>
             ))

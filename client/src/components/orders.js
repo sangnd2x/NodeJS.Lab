@@ -16,31 +16,31 @@ function Orders() {
     return (
         <div className="grid">
             {orders.map(order => (
-                <div key={order.id}>
-                    {order.products.map(product => (
-                        <div className="card product-item" key={product.id}>
+                <div key={order._id}>
+                    {order.items.map(item => (
+                    <div className="card product-item" key={item._id}>
                         <div className="card__header">
                             <h1 className="product__title">
-                                { product.title }
+                                { item.title }
                             </h1>
                         </div>
                         <div className="card__image">
-                            <img src={product.imageUrl} alt={product.title}/>
+                            <img src={item.imageUrl} alt={item.title}/>
                         </div>
                         <div className="card__content">
                             <h2 className="product__price">$
-                                { product.price }
+                                { item.price }
                             </h2>
                             <p className="product__description">
-                                { product.description }
+                                { item.description }
                             </p>
                             <p className="product__description">
-                                Quantity: { product.orderItem.quantity }
+                                Quantity: { item.quantity }
                             </p>
                         </div>
                         <div className="card__actions">
                             <a href="/" className="btn">Details</a>
-                            <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
+                            <a href={`/edit-product/${item._id}`} className="btn">Edit</a>
                             <button className="btn">Delete</button>
                         </div>
                     </div>

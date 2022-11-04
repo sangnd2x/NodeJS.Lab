@@ -1,6 +1,5 @@
 const mongodb = require('mongodb');
 const Product = require('../models/products');
-const Cart = require('../models/cart');
 
 const ObjectId = mongodb.ObjectId;
 
@@ -21,7 +20,7 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   // order of these args have to match the order in model/products
-  const product = new Product(title, price, description, imageUrl);
+  const product = new Product(title, price, description, imageUrl, null, req.user._id);
   product.save()
     .then(results => console.log('added product'))
     .catch();;

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Cart() {
     const [products, setProducts] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch('http://localhost:5000/cart')
@@ -31,7 +32,10 @@ function Cart() {
         
         fetch(url, options)
             .then(res => res.json())
-            .then(data => console.log(data))
+            .then(data => {
+                console.log(data);
+                navigate('/cart');
+            })
             .catch(err => console.log(err));
     }
     
@@ -55,7 +59,7 @@ function Cart() {
     return (
         <div className="grid">
             {products.map(product => (
-                <div className="card product-item" key={product.id}>
+                <div className="card product-item" key={product._id}>
                     <div className="card__header">
                         <h1 className="product__title">
                             { product.title }
@@ -72,13 +76,13 @@ function Cart() {
                             { product.description }
                         </p>
                         <p className="product__description">
-                            Quantity: { product.cartItem.quantity }
+                            Quantity: { product.quantity }
                         </p>
                     </div>
                     <div className="card__actions">
                         <a href="/" className="btn">Details</a>
                         <a href={`/edit-product/${product.id}`} className="btn">Edit</a>
-                        <button className="btn" onClick={() => handleDelete(product.id)}>Delete</button>
+                        <button className="btn" onClick={() => handleDelete(product._id)}>Delete</button>
                     </div>
                 </div>
                 ))

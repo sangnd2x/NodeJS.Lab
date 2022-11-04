@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoConnect = require('./util/database').mongoConnect;
+const User = require('./models/user');
 
 const server = express();
 
@@ -23,13 +24,12 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use(express.static(path.join(__dirname, 'public')));
 
 server.use((req, res, next) => {
-    // User.findById(1)
-    //     .then(user => {
-    //         req.user = user;
-    //         next();
-    //     })
-    //     .catch(err => console.log(err));
-    next();
+    User.findById('63647e6827d399baabd30890')
+        .then(user => {
+            req.user = new User(user.name, user.email, user.cart, user._id);
+            next();
+        })
+        .catch(err => console.log(err));
 })
 
 server.use(adminRoute);
