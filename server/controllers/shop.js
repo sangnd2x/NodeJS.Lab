@@ -1,4 +1,5 @@
 const Product = require('../models/products');
+const Order = require('../models/order');
 const mongoose = require('mongoose');
 
 exports.getIndex = (req, res, next) => {
@@ -45,14 +46,26 @@ exports.postCartDeletedProduct = (req, res, next) => {
 
 exports.postOrders = (req, res, next) => {
     req.user
-        .addOrder()
-        .then(result => console.log(result))
+        .populate('cart.items.productId')
+        .then(user => {
+            const products = user.cart.items.map(i => {
+                return { quantity: i.quantity, product: {...i.productId._doc} };
+            })
+            const order = new Order({
+                user: {
+                    name: req.user.name,
+                    userId: req.user
+                },
+                products: products
+            });
+            return order.save();
+        })
+        .then(result => req.user.clearCart())
         .catch(err => console.log(err));
 }
 
 exports.getOrders = (req, res, next) => {
-    req.user
-        .getOrders()
+    Order.find({ 'user.userId': req.user._id })
         .then(orders => {
             console.log(orders);
             res.statusCode = 200;

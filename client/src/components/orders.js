@@ -17,30 +17,30 @@ function Orders() {
         <div className="grid">
             {orders.map(order => (
                 <div key={order._id}>
-                    {order.items.map(item => (
-                    <div className="card product-item" key={item._id}>
+                    {order.products.map(product => (
+                    <div className="card product-item" key={product._id}>
                         <div className="card__header">
                             <h1 className="product__title">
-                                { item.title }
+                                { product.product.title }
                             </h1>
                         </div>
                         <div className="card__image">
-                            <img src={item.imageUrl} alt={item.title}/>
+                            <img src={product.product.imageUrl} alt={product.product.title}/>
                         </div>
                         <div className="card__content">
                             <h2 className="product__price">$
-                                { item.price }
+                                { product.product.price }
                             </h2>
                             <p className="product__description">
-                                { item.description }
+                                { product.product.description }
                             </p>
                             <p className="product__description">
-                                Quantity: { item.quantity }
+                                Quantity: { product.quantity }
                             </p>
                         </div>
                         <div className="card__actions">
                             <a href="/" className="btn">Details</a>
-                            <a href={`/edit-product/${item._id}`} className="btn">Edit</a>
+                            <a href={`/edit-product/${product._id}`} className="btn">Edit</a>
                             <button className="btn">Delete</button>
                         </div>
                     </div>
