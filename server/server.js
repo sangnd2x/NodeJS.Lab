@@ -6,10 +6,21 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 
-const server = express();
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
+const MONGODB_URI = 'mongodb+srv://sang2x:sang123@cluster0.j1wx6nb.mongodb.net/shop';
+
+const server = express();
+const store = new MongoDBStore({
+    uri: MONGODB_URI,
+    collection: 'sessions'
+  });
+
+const authRoute = require('./routes/auth');
 const adminRoute = require('./routes/admin');
 const shopRoute = require('./routes/shop');
+
 
 server.use(cors());
 
@@ -20,30 +31,40 @@ server.use(express.json({
 
 server.set('view engine', 'ejs');
 server.set('views', 'views');
-    ;
+
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(express.static(path.join(__dirname, 'public')));
+server.use(
+    session({
+      secret: 'no secret',
+      resave: false,
+      saveUninitialized: false,
+      store: store
+    })
+  );
 
 server.use((req, res, next) => {
-    User.findById('6364d72d23c6f0f37bf7c77f')
+    User.findById('6374a0e90e88aeddc2a41ff6')
         .then(user => {
             req.user = user;
             next();
         })
         .catch(err => console.log(err));
-})
+});
 
 server.use(adminRoute);
 server.use(shopRoute);
+server.use(authRoute)
 
 mongoose
-    .connect('mongodb+srv://sang2x:sAg12081995@cluster0.j1wx6nb.mongodb.net/shop?retryWrites=true&w=majority')
+    .connect(MONGODB_URI)
     .then(result => {
         User.findOne().then(user => {
             if (!user) {
                 const user = new User({
                     name: 'sang',
-                    email: 'sang@test.com',
+                    password: '123',
+                    email: 'test@test.com',
                     cart: {
                         items: []
                     }

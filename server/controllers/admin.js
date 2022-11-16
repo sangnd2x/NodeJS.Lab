@@ -1,4 +1,5 @@
 const Product = require('../models/products');
+const User = require('../models/user');
 
 // Fetch all products
 exports.getProducts = (req, res, next) => {
@@ -82,4 +83,6 @@ exports.postDeletedProduct = (req, res, next) => {
     })
     .catch(err => console.log(err));
 }
+
+
 

@@ -1,0 +1,24 @@
+.login-form {
+    display: grid;
+    place-items: center;
+}
+
+.login-form>form{
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form>form>label{
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.login-form>form>input {
+    height: 40px;
+    width: 150px;
+}
+
+.login-form>form>button {
+    margin: 10px 0;
+    height: 30px;
+}

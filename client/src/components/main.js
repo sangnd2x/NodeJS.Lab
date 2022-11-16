@@ -7,6 +7,7 @@ import Cart from './cart';
 import AddProduct from './add-product';
 import AdminProduct from './admin-product';
 import EditProduct from './edit-product';
+import Login from './login';
 import '../CSS/forms.css';
 import '../CSS/product.css';
 import '../CSS/main.css';
@@ -30,6 +31,7 @@ function Main() {
                 <Route path='/add-product' element={<AddProduct />} />
                 <Route path='/admin-products' element={<AdminProduct />} />
                 <Route path='/edit-product/:productId' element={<NewEditProduct />} />
+                <Route path='/login' element={<Login />} />
                 <Route index path='/' element={<Shop/>} />
             </Routes>
         </div>
