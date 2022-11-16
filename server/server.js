@@ -6,12 +6,12 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 
+const server = express();
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
 const MONGODB_URI = 'mongodb+srv://sang2x:sang123@cluster0.j1wx6nb.mongodb.net/shop';
 
-const server = express();
 const store = new MongoDBStore({
     uri: MONGODB_URI,
     collection: 'sessions'
@@ -34,14 +34,14 @@ server.set('views', 'views');
 
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(express.static(path.join(__dirname, 'public')));
-server.use(
-    session({
-      secret: 'no secret',
-      resave: false,
-      saveUninitialized: false,
-      store: store
+server.use(session({
+    secret: 'no secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    unset: 'destroy'
     })
-  );
+);
 
 server.use((req, res, next) => {
     User.findById('6374a0e90e88aeddc2a41ff6')

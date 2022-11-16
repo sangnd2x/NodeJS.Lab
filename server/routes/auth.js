@@ -9,4 +9,7 @@ const router = express.Router();
 // Log in 
 router.post('/login', authController.logIn);
 
+// Log out 
+router.post('/logout', authController.logOut);
+
 module.exports = router;
