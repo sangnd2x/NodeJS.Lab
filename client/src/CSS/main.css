@@ -26,6 +26,7 @@ main {
   height: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .main-header__item-list {
@@ -38,11 +39,26 @@ main {
 .main-header__item {
   margin: 0 1rem;
   padding: 0;
+  cursor: pointer;
 }
 
 .main-header__item a {
   text-decoration: none;
   color: white;
+}
+
+.main-header__item-button {
+  margin-left: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.main-header__item-button:hover,
+.main-header__item-button:active {
+  color: #ffeb3b;
 }
 
 .main-header__item a:hover,
@@ -109,4 +125,8 @@ main {
 
 a {
   text-decoration: none;
+}
+
+button {
+  background-color: none;
 }
