@@ -3,19 +3,22 @@ const Order = require('../models/order');
 const mongoose = require('mongoose');
 
 exports.getIndex = (req, res, next) => {
-	Product
-		.find()
-		.populate('userId')
-		.then(products => {
-				res.send(products);
-		})
-		.catch(err => console.log(err));
-};
+  console.log(req.user);
+  Product
+    .find()
+    .populate('userId')
+    .then(products => {
+      res.send(products);
+    })
+    .catch(err => console.log(err));
+}
 
 exports.postCart = (req, res, next) => {
-	const prodId = req.body.productId;
+  const prodId = req.body.productId;
+  console.log(prodId);
 	Product.findById(prodId)
-		.then(product => {
+    .then(product => {
+      // console.log(req.session.user)
 				return req.user.addToCart(product);
 		})
 		.then(result => console.log(result))
@@ -24,7 +27,7 @@ exports.postCart = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
 	req.user
-			.populate('cart.items.productId')
+			.populate(cart.items.productId)
 			.then(user => {
 					res.send(user.cart.items);
 			})
