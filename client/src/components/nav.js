@@ -1,18 +1,13 @@
 import '../CSS/main.css';
 import Cookies from 'universal-cookie';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-function Nav() {
-	const navigate = useNavigate();
-	const cookie = new Cookies();
-	const [sessionCookie, setSessionCookie] = useState(cookie.get('loggedIn'));
-
-	// useEffect(() => {
-	//     setSessionCookie(cookie.get('loggedIn'));
-	// }, [])
-	
-  console.log(sessionCookie);
+function Nav(props) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const cookie = new Cookies();
+  const [loggedIn, setLoggedIn] = useState(props.loggedIn);
   
   const handleSignUp = () => {
     navigate('/sign-up')
@@ -30,7 +25,8 @@ function Nav() {
 					'Content-Type' : 'application/json'
 			}
 		})
-			.then(res => {
+      .then(res => {
+        console.log(res)
         if (res.status === 200) {
           cookie.remove('loggedIn');
           navigate('/login');
@@ -39,7 +35,7 @@ function Nav() {
 			.catch(err => console.log(err));
 }
 
-	if (sessionCookie === 'true') {
+	if (loggedIn === 'true') {
 		return (
 			<div className='main-header'>
 				<nav className='main-header__nav'>
@@ -66,7 +62,7 @@ function Nav() {
 						<li className='main-header__item'><a href="/products">Products</a></li>
 					</ul>
 					<ul className='main-header__item-buttons'>
-						<button className='main-header__item-button' onClick={() => handleLogIn()}>Log in</button>
+						<button className='main-header__item-button' onClick={() => handleLogIn()}>Log In</button>
 						<button className='main-header__item-button' onClick={() => handleSignUp()}>Sign Up</button>
 					</ul>
 				</nav>

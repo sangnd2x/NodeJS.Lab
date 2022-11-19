@@ -23,7 +23,6 @@ function Main() {
 
   return (
     <div>
-      <Nav />
       <Routes>
         <Route path='/shop' element={<Shop/>} />
         <Route path='/products' element={<Product />} />

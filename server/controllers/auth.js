@@ -1,15 +1,19 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 
-exports.logIn = (req, res, next) => {
-  const { username, password } = req.body;
-  User
-    .findOne({ name: username })
-    .then(user => {
-      if (!user) {
-        req.flash('error', 'No username found!');
-        res.status(400).json(req.flash('error'));
-      } else {
+exports.postLogin = (req, res, next) => {
+  const { email, password } = req.body;
+  console.log(email, password)
+  const errors = validationResult(req);
+  console.log(errors);
+  if (!errors.isEmpty()) {
+    res.statusMessage = errors.array()[0].msg;
+    return res.status(422).end();
+  } else {
+    User.findOne({ email: email })
+      .then(user => {
+        // console.log(user);
         bcrypt.compare(password, user.password)
           .then(isMatched => {
             if (isMatched) {
@@ -19,42 +23,43 @@ exports.logIn = (req, res, next) => {
               req.session.save((err) => {
                 if (err) console.log(err);
                 console.log('session created!', req.session);
-                return res.status(200).json(req.flash('loggedIn'));
+                res.statusMessage = req.flash('loggedIn')
+                return res.status(200).end();
               })
             } else {
               req.flash('error1', 'Wrong password!');
-              res.status(400).json(req.flash('error1'));
+              res.statusMessage = req.flash('error1')
+              return res.status(400).end();
             }
           })
-      }
+          .catch(err => console.log(err));
     })
-    .catch(err => console.log(err));
+  }
 }
 
-exports.signUp = (req, res, next) => {
-  const { username, email, password } = req.body;
-  User
-  .findOne({ email: email })
-  .then(user => {
-    if (user) {
-      res.status(400).json({ msg: 'Email is already used!' });
-    } else {
-      bcrypt.hash(password, 12)
-      .then(hashPass => {
-        const user = new User({
-          name: username,
-          email: email,
-          password: hashPass,
-          cart: { item: [] }
-        });
-        user.save()
+exports.postSignup = (req, res, next) => {
+  const { username, email, password, confirmPassword } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors.array())
+    res.statusMessage = errors.array()[0].msg;
+    return res.status(422).end();
+  }
+  bcrypt.hash(password, 12)
+    .then(hashPass => {
+      const user = new User({
+        name: username,
+        email: email,
+        password: hashPass,
+        cart: { item: [] }
+      });
+      user.save()
         .then(result => {
-          res.status(200).json({ msg: 'New user created!' });
-        })
+          res.statusMessage = 'New user created!';
+          return res.status(200).end();
       })
-    }
-  })
-  .catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
 }
 
 exports.logOut = (req, res, next) => {

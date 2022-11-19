@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './signUp.css';
+import Nav from './nav';
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   
   const handleChange = (e) => {
@@ -25,27 +27,32 @@ const SignUp = () => {
       }
     })
       .then(res => {
-        if (res.status === 4000) {
-          alert('Email is already used!');
+        if (res.status === 200) {
+          navigate('/');
         } else {
-          navigate('/login');
+          alert(res.statusText);
         }
       })
       .catch(err => console.log(err));
   }
   
   return (
-    <div  className='signup-form'>
-			<form>
-				<label htmlFor="username">Username</label>
-				<input type="text" placeholder='Username' name="username" onChange={(e) => handleChange(e)}/>
-				<label htmlFor="email">Email</label>
-				<input type="text" placeholder='Password' name="email" onChange={(e) => handleChange(e)} />
-				<label htmlFor="password">Password</label>
-				<input type="password" placeholder='Password' name="password" onChange={(e) => handleChange(e)} />
-				<button onClick={(e) => handleSignUp(e)}>Sign Up</button>
-			</form>
-		</div>
+    <div>
+      <Nav />
+      <div  className='signup-form'>
+        <form>
+          <label htmlFor="username">Username</label>
+          <input type="text" placeholder='Username' name="username" onChange={(e) => handleChange(e)}/>
+          <label htmlFor="email">Email</label>
+          <input type="text" placeholder='Email' name="email" onChange={(e) => handleChange(e)} />
+          <label htmlFor="password">Password</label>
+          <input type="password" placeholder='Password' name="password" onChange={(e) => handleChange(e)} />
+          <label htmlFor="password">Password</label>
+          <input type="password" placeholder='Confirm Password' name="confirm-password" onChange={(e) => handleChange(e)} />
+          <button onClick={(e) => handleSignUp(e)}>Sign Up</button>
+        </form>
+		  </div>
+    </div>
   )
 }
 

@@ -2,15 +2,18 @@ import { useState, useEffect } from "react";
 import axios from 'axios';
 import '../CSS/product.css';
 import '../CSS/main.css';
+import Nav from "./nav";
+import { useLocation } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 function Shop() {
-	const [products, setProducts] = useState([]);
+  const cookie = new Cookies();
+  const [products, setProducts] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(cookie.get('loggedIn'));
 
 	useEffect(() => {
 		axios.get('http://localhost:5000/products').then(res => setProducts(res.data)).catch(err => console.log(err));
 	}, []);
-
-	console.log('from shop', products);
 
 	const addToCart = (productId) => {
 
@@ -23,14 +26,16 @@ function Shop() {
 			body: JSON.stringify(data),
 			headers: {
 					'Content-Type': 'application/json'
-			}
+      },
+      credentials: 'include'
 		};
 
 		fetch(url, options).then(res => res.json()).catch(err => console.log(err));
 	}
 
 	return (
-		<div className="grid">
+    <div className="grid">
+      <Nav loggedIn={loggedIn} />
 			{products.map(product => (
 				<div className="card product-item" key={product._id}>
 						<div className="card__header">
