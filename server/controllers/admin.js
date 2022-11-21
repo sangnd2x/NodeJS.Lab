@@ -58,8 +58,13 @@ exports.postEditedProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDescription = req.body.description;
+  const errors = validationResult(req);
 
-  Product
+  if (!errors.isEmpty()) {
+    res.statusMessage = errors.array()[0].msg;
+    return res.status(422).send(JSON.stringify({ type : errors.array()[0].param })).end();
+  } else {
+    Product
     .findById(prodId)
     .then(product => {
       console.log('from edit prod', product);
@@ -75,6 +80,7 @@ exports.postEditedProduct = (req, res, next) => {
       });
     })
     .catch(err => console.log(err))
+  }
 }
 
 // POST delete product
