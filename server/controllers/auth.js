@@ -4,9 +4,8 @@ const { validationResult } = require('express-validator');
 
 exports.postLogin = (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email, password)
   const errors = validationResult(req);
-  console.log(errors);
+  
   if (!errors.isEmpty()) {
     res.statusMessage = errors.array()[0].msg;
     return res.status(422).end();
@@ -22,14 +21,14 @@ exports.postLogin = (req, res, next) => {
               req.flash('loggedIn', 'Successfully logged in!');
               req.session.save((err) => {
                 if (err) console.log(err);
-                console.log('session created!', req.session);
-                res.statusMessage = req.flash('loggedIn')
-                return res.status(200).end();
+                console.log('session created!', req.session.user);
               })
+              res.statusMessage = req.flash('loggedIn')
+              res.status(200).end();
             } else {
               req.flash('error1', 'Wrong password!');
               res.statusMessage = req.flash('error1')
-              return res.status(400).end();
+              res.status(400).end();
             }
           })
           .catch(err => console.log(err));
@@ -68,3 +67,7 @@ exports.logOut = (req, res, next) => {
     res.status(200).json({ msg: 'deleted' });
   })
 };
+
+exports.getLogin = (req, res, next) => {
+  console.log(req.session.loggedIn);
+}

@@ -3,7 +3,6 @@ const Order = require('../models/order');
 const mongoose = require('mongoose');
 
 exports.getIndex = (req, res, next) => {
-  console.log(req.user);
   Product
     .find()
     .populate('userId')
@@ -19,7 +18,8 @@ exports.postCart = (req, res, next) => {
 	Product.findById(prodId)
     .then(product => {
       // console.log(req.session.user)
-				return req.user.addToCart(product);
+      res.status(200).json({ msg: 'Product added to cart' });
+      return req.user.addToCart(product);
 		})
 		.then(result => console.log(result))
 		.catch(err => console.log(err));
@@ -27,11 +27,11 @@ exports.postCart = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
 	req.user
-			.populate(cart.items.productId)
-			.then(user => {
-					res.send(user.cart.items);
-			})
-			.catch(err => console.log(err));
+    .populate('cart.items.productId')
+    .then(user => {
+        res.send(user.cart.items);
+    })
+    .catch(err => console.log(err));
 }
 
 exports.postCartDeletedProduct = (req, res, next) => {
@@ -70,10 +70,8 @@ exports.postOrders = (req, res, next) => {
 exports.getOrders = (req, res, next) => {
 	Order.find({ 'user.userId': req.user._id })
 		.then(orders => {
-				console.log(orders);
-				res.statusCode = 200;
-				res.send(orders);
-				res.end();
+      console.log(orders);
+      res.status(200).send(orders);
 		})
 		.catch(err => console.log(err));
 }

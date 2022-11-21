@@ -10,16 +10,15 @@ const flash = require('connect-flash');
 const User = require('./models/user');
 
 const MONGODB_URI = 'mongodb+srv://sang2x:sang123@cluster0.j1wx6nb.mongodb.net/shop';
+const authRoute = require('./routes/auth');
+const adminRoute = require('./routes/admin');
+const shopRoute = require('./routes/shop');
 
 const server = express();
 const store = new MongoDBStore({
     uri: MONGODB_URI,
     collection: 'sessions'
 });
-
-const authRoute = require('./routes/auth');
-const adminRoute = require('./routes/admin');
-const shopRoute = require('./routes/shop');
 
 server.use(cors());
 server.use(express.json({
@@ -39,12 +38,14 @@ server.use(session({
 server.use(flash());
 server.use(authRoute);
     
-server.use((req, res, next) => {
-  if (!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
-    .then(user => {
+server.use(async (req, res, next) => {
+  console.log('from server', req.session);
+  // if (!req.session.user) {
+  //   return next();
+  // }
+  User.findById('63773f1c14b25247176a5db5')
+  .then(user => {
+    // console.log('from server', user);
       req.user = user;
       next();
     })

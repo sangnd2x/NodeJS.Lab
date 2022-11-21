@@ -1,13 +1,13 @@
-import '../CSS/main.css';
 import Cookies from 'universal-cookie';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './nav.css';
 
 function Nav(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const cookie = new Cookies();
-  const [loggedIn, setLoggedIn] = useState(props.loggedIn);
+  const [loggedIn, setLoggedIn] = useState(cookie.get('loggedIn'));
   
   const handleSignUp = () => {
     navigate('/sign-up')

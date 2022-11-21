@@ -1,37 +1,45 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
-import '../CSS/product.css';
-import '../CSS/main.css';
-import Nav from "./nav";
-import { useLocation } from "react-router-dom";
+import '../../CSS/product.css';
+import '../../CSS/main.css';
+import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
+import Nav from '../../components/navbar/nav';
 
 function Shop() {
   const cookie = new Cookies();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loggedIn, setLoggedIn] = useState(cookie.get('loggedIn'));
 
 	useEffect(() => {
-		axios.get('http://localhost:5000/products').then(res => setProducts(res.data)).catch(err => console.log(err));
+    axios.get('http://localhost:5000/products')
+      .then(res => setProducts(res.data))
+      .catch(err => console.log(err));
 	}, []);
 
 	const addToCart = (productId) => {
 
 		const data = {
 				productId: productId
-		}
+    }
+
 		const url = 'http://localhost:5000/cart';
 		const options = {
 			method: 'POST',
 			body: JSON.stringify(data),
 			headers: {
 					'Content-Type': 'application/json'
-      },
-      credentials: 'include'
+      }
 		};
 
-		fetch(url, options).then(res => res.json()).catch(err => console.log(err));
-	}
+    fetch(url, options)
+      .then(res => {
+        console.log(res)
+        if (res.status === 200) navigate('/cart');
+      })
+      .catch(err => console.log(err));
+  }
 
 	return (
     <div className="grid">
@@ -56,7 +64,7 @@ function Shop() {
 						</div>
 						<div className="card__actions">
 								<a href="/" className="btn">Details</a>
-								<a href="/cart" className="btn" onClick={() => addToCart(product._id)}>Add to Cart</a>
+								<button className="btn" onClick={() => addToCart(product._id)}>Add to Cart</button>
 						</div>
 				</div>
 				))

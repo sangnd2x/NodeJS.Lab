@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import Nav from './nav';
+import Nav from '../../components/navbar/nav';
 
 function AddProduct() {
   const cookie = new Cookies();
-  const [loggedIn, setLoggedIn] = useState(cookie.get('loogedIn'));
   const [productDetails, setProductDetails] = useState({
       title: '',
       imageUrl: '',
@@ -45,7 +44,7 @@ function AddProduct() {
   } else {
     return (
       <div>
-        <Nav loggedIn={loggedIn} />
+        <Nav />
         <div className="product-form">
             <div className="form-control">
                 <label htmlFor="title">Title</label>

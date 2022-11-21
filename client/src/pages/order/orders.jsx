@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import Nav from "./nav";
-import Cookies from "universal-cookie";
+import Nav from '../../components/navbar/nav';
 
 function Orders() {
-  const cookie = new Cookies();
-  const [loggedIn, setLoggedIn] = useState(cookie.get('loogedIn'));
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-      fetch('http://localhost:5000/order')
+      fetch('http://localhost:5000/orders')
           .then(res => res.json())
           .then(data => {
               console.log(data);
@@ -19,7 +16,7 @@ function Orders() {
 
   return (
     <div>
-      <Nav loggedIn={loggedIn}/>
+      <Nav />
       <div className="grid">
         {orders.map(order => (
           <div key={order._id}>

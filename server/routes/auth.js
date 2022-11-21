@@ -9,6 +9,7 @@ const authController = require('../controllers/auth');
 const router = express.Router();
 
 // Log in 
+router.get('/login', authController.getLogin);
 router.post('/login',
   body('email')
     .notEmpty()

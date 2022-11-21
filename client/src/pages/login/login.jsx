@@ -3,7 +3,7 @@ import axios from 'axios';
 import './login.css';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import Nav from './nav';
+import Nav from '../../components/navbar/nav';
 
 const Login = () => {
 	const navigate = useNavigate();

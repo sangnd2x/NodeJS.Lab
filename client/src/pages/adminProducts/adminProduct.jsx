@@ -2,17 +2,18 @@ import { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
-import Nav from "./nav";
+import Nav from '../../components/navbar/nav';
 
 function AdminProduct() {
   const cookie = new Cookies();
-  const [loggedIn, setLoggedIn] = useState(cookie.get('loogedIn'));
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   // fetch all products from server
   useEffect(() => {
-    axios.get('http://localhost:5000/admin/products').then(res => setProducts(res.data)).catch(err => console.log(err));
+    axios.get('http://localhost:5000/admin/products')
+      .then(res => setProducts(res.data))
+      .catch(err => console.log(err));
   }, []);
 
   // delete product
@@ -23,10 +24,17 @@ function AdminProduct() {
 
     const url = 'http://localhost:5000/delete-product';
 
-    axios.post(url, data).then(res => {
+    axios.post(url, data)
+      .then(res => {
         navigate('/admin-products');
-    }).catch(err => console.log(err));
+      })
+      .catch(err => console.log(err));
       
+  }
+
+  // edit product
+  const handleEdit = (productId) => {
+    navigate(`/edit-product/${productId}`, { state: { productId } })
   }
 
   if (!cookie.get('loggedIn')) {
@@ -38,7 +46,7 @@ function AdminProduct() {
   } else {
     return (
       <div>
-        <Nav loggedIn={loggedIn} />
+        <Nav />
         <div className="grid">
         {products.map(product => (
           <div className="card product-item" key={product._id}>
@@ -60,8 +68,8 @@ function AdminProduct() {
             </div>
             <div className="card__actions">
               <button href="/" className="btn">Details</button>
-              <a href={`/edit-product/${product._id}`} className="btn">Edit</a>
-              <button type="submit" className="btn" onClick={() => handleDelete(product._id)}>Delete</button>
+              <button className="btn" onClick={() => handleEdit(product._id)}>Edit</button>
+              <button className="btn" onClick={() => handleDelete(product._id)}>Delete</button>
             </div>
           </div>
         ))

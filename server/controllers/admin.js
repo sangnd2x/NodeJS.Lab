@@ -6,7 +6,7 @@ exports.getProducts = (req, res, next) => {
   Product.find()
     .populate('userId')
     .then(products => {
-      res.send(products);
+      res.status(200).send(products);
     })
     .catch(err => console.log(err));
   };
@@ -33,11 +33,7 @@ exports.postAddProduct = (req, res, next) => {
 
 // Get selected edit product
 exports.getEditProduct = (req, res, next) => {
-  const isEdit = req.query.edit;
   const id = req.params.productId;
-  if (!isEdit) {
-    return res.redirect('/');
-  }
   Product.findById(id)
     .then(product => res.send(product))
     .catch(err => console.log(err));
@@ -45,8 +41,7 @@ exports.getEditProduct = (req, res, next) => {
 
 // Post edited product
 exports.postEditedProduct = (req, res, next) => {
-  console.log(req.body);
-  const prodId = req.body.id;
+  const prodId = req.body._id;
   const updatedTitle = req.body.title;
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
@@ -55,18 +50,17 @@ exports.postEditedProduct = (req, res, next) => {
   Product
     .findById(prodId)
     .then(product => {
+      console.log('from edit prod', product);
       product.title = updatedTitle;
       product.price = updatedPrice;
-      product.imageUrl = updatedImageUrl;
       product.description = updatedDescription;
-      return product.save();
-    })
-    .then(result => {
-      console.log('Updated');
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.write(JSON.stringify({ msg: 'edit succeed' }));
-      res.end();
+      product.imageUrl = updatedImageUrl;
+      product.save()
+        .then(result => {
+          console.log(result)
+          console.log('Updated');
+          res.status(200).json({ msg: 'Edited!' });
+      });
     })
     .catch(err => console.log(err))
 }

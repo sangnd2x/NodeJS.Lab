@@ -1,39 +1,45 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
-import Nav from "./nav";
-import Cookies from "universal-cookie";
+import Nav from '../../components/navbar/nav';
+import { useNavigate } from "react-router-dom";
 
 function Product() {
-  const cookie = new Cookies();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(cookie.get('loggedIn'));
 
   useEffect(() => {
-      axios.get('http://localhost:5000/products').then(res => setProducts(res.data)).catch(err => console.log(err));
+    axios.get('http://localhost:5000/products')
+      .then(res => setProducts(res.data))
+      .catch(err => console.log(err));
   }, []);
 
-  console.log('from shop', products);
+  console.log(products);
 
   const addToCart = (productId) => {
 
-      const data = {
-          productId: productId
-      }
-      const url = 'http://localhost:5000/cart';
-      const options = {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      };
+    const data = {
+        productId: productId
+    }
 
-      fetch(url, options).then(res => res.json()).catch(err => console.log(err));
+    const url = 'http://localhost:5000/cart';
+    const options = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    fetch(url, options)
+      .then(res => {
+        if (res.status === 200) navigate('/cart')
+      })
+      .catch(err => console.log(err));
   }
 
   return (
     <div>
-      <Nav loggedIn={loggedIn} />
+      <Nav />
       <div className="grid">
         {products.map(product => (
           <div className="card product-item" key={product._id}>
@@ -55,7 +61,7 @@ function Product() {
             </div>
             <div className="card__actions">
               <a href="/" className="btn">Details</a>
-              <a href="/cart" className="btn" onClick={() => addToCart(product.id)}>Add to Cart</a>
+              <button className="btn" onClick={() => addToCart(product._id)}>Add to Cart</button>
             </div>
           </div>
         ))
