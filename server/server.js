@@ -39,21 +39,31 @@ server.use(flash());
 server.use(authRoute);
     
 server.use(async (req, res, next) => {
-  console.log('from server', req.session);
+  // console.log('from server', req.session);
   // if (!req.session.user) {
   //   return next();
   // }
   User.findById('63773f1c14b25247176a5db5')
-  .then(user => {
+    .then(user => {
     // console.log('from server', user);
+      if (!user) {
+        return next();
+      }
       req.user = user;
       next();
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      throw new Error(err);
+    });
 });
 
 server.use(adminRoute);
 server.use(shopRoute);
+
+server.use((error, req, res, next) => {
+  console.log(error.httpStatusCode)
+  res.status(error.httpStatusCode).json({msg:'error'});
+});
 
 mongoose
 	.connect(MONGODB_URI)

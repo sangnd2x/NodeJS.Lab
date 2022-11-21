@@ -31,6 +31,7 @@ function AddProduct() {
     
     fetch(url, options)
       .then(res => {
+        console.log(res);
         if (res.status === 200) {
           navigate('/shop');
         } else {

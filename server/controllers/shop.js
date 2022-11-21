@@ -9,7 +9,11 @@ exports.getIndex = (req, res, next) => {
     .then(products => {
       res.send(products);
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.postCart = (req, res, next) => {
@@ -22,7 +26,11 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
 		})
 		.then(result => console.log(result))
-		.catch(err => console.log(err));
+		.catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.getCart = (req, res, next) => {
@@ -31,20 +39,28 @@ exports.getCart = (req, res, next) => {
     .then(user => {
         res.send(user.cart.items);
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.postCartDeletedProduct = (req, res, next) => {
 	const prodId = req.body.productId;
 	req.user
-			.removeFromCart(prodId)
-			.then(results => {
-					res.statusCode = 200;
-					res.setHeader("Content-Type", "application/json");
-					res.write(JSON.stringify({ msg: 'delete succeed' }));
-					res.end();
-			})
-			.catch(err => console.log(err));
+    .removeFromCart(prodId)
+    .then(results => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.write(JSON.stringify({ msg: 'delete succeed' }));
+        res.end();
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.postOrders = (req, res, next) => {
@@ -64,16 +80,24 @@ exports.postOrders = (req, res, next) => {
 				return order.save();
 		})
 		.then(result => req.user.clearCart())
-		.catch(err => console.log(err));
+		.catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.getOrders = (req, res, next) => {
 	Order.find({ 'user.userId': req.user._id })
-		.then(orders => {
-      console.log(orders);
-      res.status(200).send(orders);
-		})
-		.catch(err => console.log(err));
+  .then(orders => {
+    console.log(orders);
+    res.status(200).send(orders);
+  })
+  .catch(err => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  });
 }
 
 

@@ -31,7 +31,11 @@ exports.postLogin = (req, res, next) => {
               res.status(400).end();
             }
           })
-          .catch(err => console.log(err));
+          .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+          });
     })
   }
 }
@@ -58,7 +62,11 @@ exports.postSignup = (req, res, next) => {
           return res.status(200).end();
       })
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.logOut = (req, res, next) => {

@@ -12,7 +12,10 @@ function AdminProduct() {
   // fetch all products from server
   useEffect(() => {
     axios.get('http://localhost:5000/admin/products')
-      .then(res => setProducts(res.data))
+      .then(res => {
+        setProducts(res.data);
+        console.log(res.status)
+      })
       .catch(err => console.log(err));
   }, []);
 

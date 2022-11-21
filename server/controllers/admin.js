@@ -4,12 +4,17 @@ const { validationResult } = require('express-validator');
 
 // Fetch all products
 exports.getProducts = (req, res, next) => {
+  // throw new Error('error');
   Product.find()
     .populate('userId')
     .then(products => {
       res.status(200).send(products);
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
   };
 
   // Add new product
@@ -37,18 +42,28 @@ exports.postAddProduct = (req, res, next) => {
       .save()
       .then(results => {
         console.log('added product');
-        res.status(200).json({ msg: 'New Product Added!' });
       })
-      .catch();;
+      .catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+      });
   }
 }
 
 // Get selected edit product
 exports.getEditProduct = (req, res, next) => {
+  
   const id = req.params.productId;
   Product.findById(id)
-    .then(product => res.send(product))
-    .catch(err => console.log(err));
+    .then(product => {
+      res.send(product);
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 // Post edited product
@@ -62,7 +77,7 @@ exports.postEditedProduct = (req, res, next) => {
 
   if (!errors.isEmpty()) {
     res.statusMessage = errors.array()[0].msg;
-    return res.status(422).send(JSON.stringify({ type : errors.array()[0].param })).end();
+    return res.status(422).send(JSON.stringify({ type : errors.array()[0].param})).end();
   } else {
     Product
     .findById(prodId)
@@ -79,7 +94,11 @@ exports.postEditedProduct = (req, res, next) => {
           res.status(200).json({ msg: 'Edited!' });
       });
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
   }
 }
 
@@ -93,7 +112,11 @@ exports.postDeletedProduct = (req, res, next) => {
     res.write(JSON.stringify({ msg: 'delete succeed' }));
     res.end();
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 
