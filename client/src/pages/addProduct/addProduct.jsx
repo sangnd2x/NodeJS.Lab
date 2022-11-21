@@ -29,9 +29,15 @@ function AddProduct() {
         }
     };
     
-    fetch(url, options).then(res => console.log(res)).catch(err => console.log(err));
-
-    navigate('/shop');
+    fetch(url, options)
+      .then(res => {
+        if (res.status === 200) {
+          navigate('/shop');
+        } else {
+          return alert(res.statusText);
+        }
+      })
+      .catch(err => console.log(err));
 
   }
 

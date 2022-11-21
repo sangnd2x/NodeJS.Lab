@@ -1,5 +1,6 @@
 const Product = require('../models/products');
 const User = require('../models/user');
+const { validationResult } = require('express-validator');
 
 // Fetch all products
 exports.getProducts = (req, res, next) => {
@@ -17,18 +18,29 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+  const errors = validationResult(req);
+  console.log(errors)
+
   // order of these args have to match the order in model/products
-  const product = new Product({
-    title: title,
-    price: price,
-    description: description,
-    imageUrl: imageUrl,
-    userId: req.user
-  });
-  product
-    .save()
-    .then(results => console.log('added product'))
-    .catch();;
+  if (!errors.isEmpty()) {
+    res.statusMessage = errors.array()[0].msg;
+    return res.status(422).end();
+  } else {
+    const product = new Product({
+      title: title,
+      price: price,
+      description: description,
+      imageUrl: imageUrl,
+      userId: req.user
+    });
+    product
+      .save()
+      .then(results => {
+        console.log('added product');
+        res.status(200).json({ msg: 'New Product Added!' });
+      })
+      .catch();;
+  }
 }
 
 // Get selected edit product
