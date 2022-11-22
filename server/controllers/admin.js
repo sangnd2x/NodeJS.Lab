@@ -20,11 +20,16 @@ exports.getProducts = (req, res, next) => {
   // Add new product
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
-  const errors = validationResult(req);
-  console.log(errors)
+  const errors = validationResult(req);  
+  if (!image) {
+    res.statusMessage = 'Invalid image type'
+    return res.statu(422).end();
+  }
+
+  const imageUrl = 'http://localhost:5000/' + image.path;
 
   // order of these args have to match the order in model/products
   if (!errors.isEmpty()) {
@@ -41,7 +46,8 @@ exports.postAddProduct = (req, res, next) => {
     product
       .save()
       .then(results => {
-        console.log('added product');
+        res.statusMessage = 'Product Added'
+        res.status(200).end();
       })
       .catch(err => {
         const error = new Error(err);
@@ -70,8 +76,8 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditedProduct = (req, res, next) => {
   const prodId = req.body._id;
   const updatedTitle = req.body.title;
-  const updatedImageUrl = req.body.imageUrl;
-  const updatedPrice = req.body.price;
+  const image = req.file;
+  const updatedPrice = +req.body.price;
   const updatedDescription = req.body.description;
   const errors = validationResult(req);
 
@@ -86,12 +92,15 @@ exports.postEditedProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDescription;
-      product.imageUrl = updatedImageUrl;
+      if (image) {
+        product.imageUrl = 'http://localhost:5000/' + image.path;
+      }
       product.save()
         .then(result => {
           console.log(result)
           console.log('Updated');
-          res.status(200).json({ msg: 'Edited!' });
+          res.statusMessage = 'Product Edited'
+          res.status(200).end();
       });
     })
     .catch(err => {

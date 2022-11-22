@@ -11,9 +11,13 @@ function Shop() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loggedIn, setLoggedIn] = useState(cookie.get('loggedIn'));
+  console.log(products);
 
-	useEffect(() => {
-    axios.get('http://localhost:5000/products')
+  useEffect(() => {
+    const headers = {
+      'Access-Control-Allow-Origin': 'http://localhost:3000'
+    }
+    axios.get('http://localhost:5000/products',{headers}, {withCredentials:true})
       .then(res => setProducts(res.data))
       .catch(err => console.log(err));
 	}, []);
@@ -24,18 +28,15 @@ function Shop() {
 				productId: productId
     }
 
-		const url = 'http://localhost:5000/cart';
-		const options = {
-			method: 'POST',
-			body: JSON.stringify(data),
-			headers: {
-					'Content-Type': 'application/json'
-      }
-		};
+    const url = 'http://localhost:5000/cart';
 
-    fetch(url, options)
+    const headers = {
+      'Access-Control-Allow-Origin': 'http://localhost:3000'
+    }
+    
+    axios.post(url, data, { headers }, { withCredentials: true })
       .then(res => {
-        console.log(res)
+        console.log(res);
         if (res.status === 200) navigate('/cart');
       })
       .catch(err => console.log(err));
@@ -52,7 +53,7 @@ function Shop() {
 								</h1>
 						</div>
 						<div className="card__image">
-								<img src={product.imageUrl} alt={product.title}/>
+								<img src={ product.imageUrl } alt={product.title}/>
 						</div>
 						<div className="card__content">
 								<h2 className="product__price">

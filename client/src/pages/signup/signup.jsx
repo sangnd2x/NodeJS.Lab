@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './signup.css';
 import Nav from '../../components/navbar/nav';
+import axios from 'axios';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -19,16 +20,10 @@ const SignUp = () => {
 
   const handleSignUp = (e) => {
     e.preventDefault();
-    fetch('http://localhost:5000/sign-up', {
-      method: 'POST',
-      body: JSON.stringify(user),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+    axios.post('http://localhost:5000/sign-up', user)
       .then(res => {
         if (res.status === 200) {
-          navigate('/');
+          navigate('/login');
         } else {
           alert(res.statusText);
         }

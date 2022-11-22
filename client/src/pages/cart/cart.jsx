@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Nav from '../../components/navbar/nav';
+import axios from "axios";
 import './cart.css'
 
 function Cart() {
@@ -8,9 +9,15 @@ function Cart() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:5000/cart')
-      .then(res => res.json())
-      .then(data => setProducts(data))
+    const headers = {
+      'Access-Control-Allow-Origin': 'http://localhost:3000'
+    }
+
+    axios.get('http://localhost:5000/cart', {headers}, {withCredentials:true})
+      .then(res => {
+        console.log(res.data);
+        setProducts(res.data);
+      })
       .catch(err => console.log(err));
   }, []);
 
@@ -42,14 +49,14 @@ function Cart() {
   const handleOrder = (e) => {
     const url = 'http://localhost:5000/create-order';
 
-    const options = {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      }
-    };
+    // const options = {
+    //   method: 'POST',
+    //   headers: {
+    //       'Content-Type': 'application/json'
+    //   }
+    // };
 
-    fetch(url, options)
+    axios.post(url)
       .then(res => {
         if (res.status === 200) navigate('/orders');
       })

@@ -22,10 +22,11 @@ exports.postCart = (req, res, next) => {
 	Product.findById(prodId)
     .then(product => {
       // console.log(req.session.user)
-      res.status(200).json({ msg: 'Product added to cart' });
-      return req.user.addToCart(product);
+      req.user.addToCart(product);
+      res.statusMessage = 'Product added to cart'
+      return res.status(200).end()
 		})
-		.then(result => console.log(result))
+		.then(result => console.log('Product added to cart'))
 		.catch(err => {
       const error = new Error(err);
       error.httpStatusCode = 500;
@@ -37,7 +38,7 @@ exports.getCart = (req, res, next) => {
 	req.user
     .populate('cart.items.productId')
     .then(user => {
-        res.send(user.cart.items);
+        res.status(200).send(user.cart.items);
     })
     .catch(err => {
       const error = new Error(err);
@@ -66,20 +67,23 @@ exports.postCartDeletedProduct = (req, res, next) => {
 exports.postOrders = (req, res, next) => {
 	req.user
 		.populate('cart.items.productId')
-		.then(user => {
-				const products = user.cart.items.map(i => {
-						return { quantity: i.quantity, product: {...i.productId._doc} };
-				})
-				const order = new Order({
-						user: {
-								name: req.user.name,
-								userId: req.user
-						},
-						products: products
-				});
-				return order.save();
-		})
-		.then(result => req.user.clearCart())
+    .then(user => {
+      console.log(user.cart.items);
+      const products = user.cart.items.map(i => {
+        return { quantity: i.quantity, product: { ...i.productId._doc } };
+      });
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user
+        },
+        products: products
+      });
+      return order.save();
+    })
+    .then(result => {
+      req.user.clearCart();
+    })
 		.catch(err => {
       const error = new Error(err);
       error.httpStatusCode = 500;

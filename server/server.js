@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const User = require('./models/user');
 
@@ -25,25 +26,43 @@ server.use(express.json({
     type: ['application/json']
 }));
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  }
+})
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+}
+
 server.use(bodyParser.urlencoded({ extended: false }));
+server.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 server.use(express.static(path.join(__dirname, 'public')));
+server.use('/images', express.static(path.join(__dirname, 'images')));
 server.use(session({
-    secret: 'no secret',
-    resave: false,
-    saveUninitialized: false,
-    store: store
-    })
-);
+  secret: 'you are a wizard Harry',
+  resave: false,
+  saveUninitialized: false,
+  store: store
+}));
 
 server.use(flash());
 server.use(authRoute);
     
 server.use(async (req, res, next) => {
-  // console.log('from server', req.session);
-  // if (!req.session.user) {
-  //   return next();
-  // }
-  User.findById('63773f1c14b25247176a5db5')
+  console.log('from server', req.session);
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then(user => {
     // console.log('from server', user);
       if (!user) {
@@ -61,7 +80,7 @@ server.use(adminRoute);
 server.use(shopRoute);
 
 server.use((error, req, res, next) => {
-  console.log(error.httpStatusCode)
+  console.log(error);
   res.status(error.httpStatusCode).json({msg:'error'});
 });
 

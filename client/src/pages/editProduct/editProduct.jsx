@@ -11,7 +11,7 @@ function EditProduct(props) {
   const navigate = useNavigate();
   const [product, setProduct] = useState({
     title: '',
-    imageUrl: '',
+    image: '',  
     price: '',
     description: ''
   });
@@ -22,6 +22,10 @@ function EditProduct(props) {
     price: false,
     description: false
   });
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDesciprtion] = useState('');
+  const [image, setImage] = useState('');
 
   useEffect(() => {
     const fetch = () => {
@@ -44,17 +48,16 @@ function EditProduct(props) {
 
   const handleUpdate = (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("_id", productId);
+    formData.append("title", title);
+    formData.append("image", image);
+    formData.append("price", price);
+    formData.append("description", description);
 
-    fetch('http://localhost:5000/edit-product', {
-        method: 'POST',
-        body: JSON.stringify(product),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
+    axios.post('http://localhost:5000/edit-product', formData)
       .then(res => {
         console.log(res);
-        res.json()
         if (res.status === 200) {
           navigate('/admin-products');
         } else {
@@ -84,28 +87,28 @@ function EditProduct(props) {
             <input type="text" name="title" id="title"
               defaultValue={product.title}
               // value={productDetails.title}
-              onChange={(e) => handleChange(e)} />
+              onChange={(e) => setTitle(e.target.value)} />
           </div>
           <div className={errors.imageUrl? 'form-control-error' : 'form-control'}>
-            <label htmlFor="imageUrl">Image URL</label>
-            <input type="text" name="imageUrl" id="imageUrl"
+            <label htmlFor="image">Image URL</label>
+            <input type="file" name="image" id="image"
               defaultValue={product.imageUrl}
               // value={productDetails.imageUrl}
-              onChange={(e) => handleChange(e)} />
+              onChange={(e) => setImage(e.target.files[0])} />
           </div>
           <div className={errors.price? 'form-control-error' : 'form-control'}>
             <label htmlFor="price">Price</label>
             <input type="number" name="price" id="price" step="0.01"
               defaultValue={product.price}
               // value={productDetails.price}
-              onChange={(e) => handleChange(e)} />
+              onChange={(e) => setPrice(e.target.value)} />
           </div>
           <div className={errors.description? 'form-control-error' : 'form-control'}>
             <label htmlFor="description">Description</label>
             <textarea name="description" id="description" rows="5"
               defaultValue={product.description}
               // value={productDetails.description}
-              onChange={(e) => handleChange(e)}></textarea>
+              onChange={(e) => setDesciprtion(e.target.value)}></textarea>
           </div>
           {/* <div className="form-control">
             <input type="hidden" name="productId" id="productId"
