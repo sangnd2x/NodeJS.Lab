@@ -3,8 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
+const jwt = require('jsonwebtoken');
+require('dotenv').config(); 
 const flash = require('connect-flash');
 const multer = require('multer');
 
@@ -16,10 +16,6 @@ const adminRoute = require('./routes/admin');
 const shopRoute = require('./routes/shop');
 
 const server = express();
-const store = new MongoDBStore({
-    uri: MONGODB_URI,
-    collection: 'sessions'
-});
 
 server.use(cors());
 server.use(express.json({
@@ -47,34 +43,43 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 server.use(express.static(path.join(__dirname, 'public')));
 server.use('/images', express.static(path.join(__dirname, 'images')));
-server.use(session({
-  secret: 'you are a wizard Harry',
-  resave: false,
-  saveUninitialized: false,
-  store: store
-}));
 
 server.use(flash());
 server.use(authRoute);
     
-server.use(async (req, res, next) => {
-  console.log('from server', req.session);
-  if (!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
-    .then(user => {
-    // console.log('from server', user);
-      if (!user) {
-        return next();
-      }
-      req.user = user;
-      next();
-    })
-    .catch(err => {
-      throw new Error(err);
-    });
-});
+// server.use((req, res, next) => {
+  
+
+  // console.log('from server', req.session);
+  // if (!req.session.user) {
+  //   return next();
+  // }
+  // User.findById(req.session.user._id)
+  //   .then(user => {
+  //   // console.log('from server', user);
+  //     if (!user) {
+  //       return next();
+  //     }
+  //     req.user = user;
+  //     next();
+  //   })
+  //   .catch(err => {
+  //     throw new Error(err);
+  //   });
+// });
+
+// function jwtAuth(req, res) {
+//   const authHeader = req.headers['authorization'];
+//   const token = authHeader && authHeader.split(' ');
+//   if (token === null) return res.status(401);
+
+//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//     if (err) return res.status(403);
+//     req.user = user;
+//     console.log(req.user);
+//     next();
+//   });
+// }
 
 server.use(adminRoute);
 server.use(shopRoute);

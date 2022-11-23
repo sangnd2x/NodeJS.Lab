@@ -8,7 +8,11 @@ function Product() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/products')
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+
+    axios.get('http://localhost:5000/index', {headers})
       .then(res => setProducts(res.data))
       .catch(err => console.log(err));
   }, []);
@@ -22,15 +26,12 @@ function Product() {
     }
 
     const url = 'http://localhost:5000/cart';
-    const options = {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
 
-    fetch(url, options)
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+
+    axios.post(url, data, {headers})
       .then(res => {
         if (res.status === 200) navigate('/cart')
       })

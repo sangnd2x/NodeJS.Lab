@@ -11,7 +11,11 @@ function AdminProduct() {
 
   // fetch all products from server
   useEffect(() => {
-    axios.get('http://localhost:5000/admin/products')
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+
+    axios.get('http://localhost:5000/admin/products', {headers})
       .then(res => {
         setProducts(res.data);
         console.log(res.status)

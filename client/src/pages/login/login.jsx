@@ -9,7 +9,7 @@ const Login = () => {
 	const navigate = useNavigate();
 	const cookie = new Cookies();
 	const [user, setUser] = useState({
-		email: '',
+		username: '',
 		password: ''
   });
   const [loggedIn, setLoggedIn] = useState('');
@@ -21,13 +21,7 @@ const Login = () => {
 
 	const handleLogIn = (e) => {
 		e.preventDefault(); 
-		fetch('http://localhost:5000/login', {
-			method: 'POST',
-			body: JSON.stringify(user),
-			headers: {
-					'Content-Type': 'application/json'
-			}
-		})
+		axios.post('http://localhost:5000/login', user)
       .then(res => {
         // res.json()
         console.log(res)
@@ -36,6 +30,7 @@ const Login = () => {
         } else {
           cookie.set('loggedIn', true, { path: '/' });
           setLoggedIn(cookie.get('loggedIn'));
+          localStorage.setItem('token', res.data.accessToken);
           navigate('/', { state: loggedIn });
         }
       })
@@ -48,8 +43,8 @@ const Login = () => {
       <Nav loggedIn={loggedIn} /> 
       <div  className='login-form'>
         <form>
-          <label htmlFor="email">Email</label>
-          <input type="text" placeholder='Email' name="email" onChange={(e) => handleChange(e)}/>
+          <label htmlFor="username">Username</label>
+          <input type="text" placeholder='Username' name="username" onChange={(e) => handleChange(e)}/>
           <label htmlFor="password">Password</label>
           <input type="password" placeholder='Password' name="password" onChange={(e) => handleChange(e)} />
           <button onClick={(e) => handleLogIn(e)}>Login</button>

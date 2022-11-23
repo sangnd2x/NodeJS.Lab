@@ -1,18 +1,46 @@
 import { useEffect, useState } from "react";
 import Nav from '../../components/navbar/nav';
+import axios from "axios";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-      fetch('http://localhost:5000/orders')
-          .then(res => res.json())
-          .then(data => {
-              console.log(data);
-              setOrders(data);
-          })
-          .catch(err => console.log(err));
-  },[]);
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+
+    axios('http://localhost:5000/orders', {headers})
+      .then(res => {
+          console.log(res.data);
+          setOrders(res.data);
+      })
+      .catch(err => console.log(err));
+  }, []);
+  
+  const getInvoice = (orderId) => {
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-type': 'application/pdf'
+    }
+
+    fetch(`http://localhost:5000/orders/${orderId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Content-type': 'application/pdf'
+      }
+    })
+      .then(res => res.blob())
+      .then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.dowload = 'order.json';
+        a.click();
+      })
+      .catch(err => console.log(err));
+  }
 
   return (
     <div>
@@ -45,6 +73,7 @@ function Orders() {
                 <a href="/" className="btn">Details</a>
                 <a href={`/edit-product/${product._id}`} className="btn">Edit</a>
                 <button className="btn">Delete</button>
+                <button className="btn" onClick={() => getInvoice(order._id)}>Invoice</button>
               </div>
             </div>
             ))}

@@ -1,33 +1,28 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
+require('dotenv').config(); 
 
 exports.postLogin = (req, res, next) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   const errors = validationResult(req);
   
   if (!errors.isEmpty()) {
     res.statusMessage = errors.array()[0].msg;
     return res.status(422).end();
   } else {
-    User.findOne({ email: email })
+    User.findOne({ name: username })
       .then(user => {
-        // console.log(user);
+        // console.log(user)
         bcrypt.compare(password, user.password)
           .then(isMatched => {
             if (isMatched) {
-              req.session.user = user;
-              req.session.isLoggedIn = true;
-              req.flash('loggedIn', 'Successfully logged in!');
-              req.session.save((err) => {
-                if (err) console.log(err);
-                console.log('session created!', req.session.user);
-              })
-              res.statusMessage = req.flash('loggedIn')
-              res.status(200).end();
+              const accessToken = jwt.sign(user.toJSON(),`${process.env.ACCESS_TOKEN_SECRET}`);
+              res.statusMessage = 'Successfully logged in!';
+              res.status(200).json({ accessToken: accessToken });
             } else {
-              req.flash('error1', 'Wrong password!');
-              res.statusMessage = req.flash('error1')
+              res.statusMessage = 'Wrong password!';
               res.status(400).end();
             }
           })
@@ -70,10 +65,7 @@ exports.postSignup = (req, res, next) => {
 }
 
 exports.logOut = (req, res, next) => {
-  req.session.destroy(() => {
-    console.log('destroyed')
-    res.status(200).json({ msg: 'deleted' });
-  })
+  res.status(200).json({ msg: 'deleted' });
 };
 
 exports.getLogin = (req, res, next) => {

@@ -1,1 +1,11 @@
-GET http://localhost:5000/cart
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+  "username" : "sang",
+  "password" : "123456789"
+}
+
+###
+GET http://localhost:5000/index
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYXJ0Ijp7Iml0ZW1zIjpbXX0sIl9pZCI6IjYzN2M2ZjM4MmQ3MTY5MWI5MGZkMzAzZSIsIm5hbWUiOiJzYW5nIiwicGFzc3dvcmQiOiIkMmEkMTIkLjFJMVpaR3FtSzEzZVY1RExLLklST3FwWmxTVXdsYTUyWVJIS1pINzJRLk4yaThHTGxGSGkiLCJlbWFpbCI6InNhbmdAdGVzdC5jb20iLCJfX3YiOjAsImlhdCI6MTY2OTEwOTU1Mn0.X9dFCSRRMpvKT4B9dbBJXEkSSmSepy8OppzlrrM7LvA

@@ -11,9 +11,9 @@ const router = express.Router();
 // Log in 
 router.get('/login', authController.getLogin);
 router.post('/login',
-  body('email')
+  body('username')
     .notEmpty()
-    .withMessage('Please enter email!'),
+    .withMessage('Please enter username!'),
   body('password')
     .notEmpty()
     .withMessage('Please enter password'),

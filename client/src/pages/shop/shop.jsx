@@ -15,9 +15,9 @@ function Shop() {
 
   useEffect(() => {
     const headers = {
-      'Access-Control-Allow-Origin': 'http://localhost:3000'
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
     }
-    axios.get('http://localhost:5000/products',{headers}, {withCredentials:true})
+    axios.get('http://localhost:5000/index', {headers})
       .then(res => setProducts(res.data))
       .catch(err => console.log(err));
 	}, []);
@@ -31,10 +31,10 @@ function Shop() {
     const url = 'http://localhost:5000/cart';
 
     const headers = {
-      'Access-Control-Allow-Origin': 'http://localhost:3000'
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
     }
     
-    axios.post(url, data, { headers }, { withCredentials: true })
+    axios.post(url, data, {headers})
       .then(res => {
         console.log(res);
         if (res.status === 200) navigate('/cart');

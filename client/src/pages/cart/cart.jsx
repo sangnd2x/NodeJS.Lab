@@ -10,10 +10,10 @@ function Cart() {
 
   useEffect(() => {
     const headers = {
-      'Access-Control-Allow-Origin': 'http://localhost:3000'
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
     }
 
-    axios.get('http://localhost:5000/cart', {headers}, {withCredentials:true})
+    axios.get('http://localhost:5000/cart', {headers})
       .then(res => {
         console.log(res.data);
         setProducts(res.data);
@@ -27,17 +27,21 @@ function Cart() {
       productId: productId
     }
 
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+
     const url = 'http://localhost:5000/cart/delete-product';
 
-    const options = {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-          'Content-Type': 'application/json'
-      }
-    };
+    // const options = {
+    //   method: 'POST',
+    //   body: JSON.stringify(data),
+    //   headers: {
+    //       'Content-Type': 'application/json'
+    //   }
+    // };
     
-    fetch(url, options)
+    axios(url, data, {headers})
       .then(res => {
         console.log(res);
         if (res.status === 200) navigate('/cart');
@@ -49,6 +53,9 @@ function Cart() {
   const handleOrder = (e) => {
     const url = 'http://localhost:5000/create-order';
 
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
     // const options = {
     //   method: 'POST',
     //   headers: {
@@ -56,7 +63,7 @@ function Cart() {
     //   }
     // };
 
-    axios.post(url)
+    axios.post(url, {}, {headers})
       .then(res => {
         if (res.status === 200) navigate('/orders');
       })

@@ -31,9 +31,13 @@ function AddProduct() {
     formData.append("price", price);
     formData.append("description", description);
 
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+
     const url = 'http://localhost:5000/add-product';
 
-    axios.post(url, formData)
+    axios.post(url, formData, {headers})
       .then(res => {
         console.log(res);
       if (res.status === 200) {

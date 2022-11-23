@@ -4,12 +4,12 @@ const express = require('express');
 const { body } = require('express-validator');
 
 const adminController = require('../controllers/admin');
-const isAuth = require('../middleware/is-auth');
+const jwtAuth = require('../middleware/jwtAuth');
 
 const router = express.Router();
 
 //GET fetch all products
-router.get('/admin/products', adminController.getProducts);
+router.get('/admin/products', jwtAuth, adminController.getProducts);
 
 // POST localhost:5000/add-product 
 router.post('/add-product',
@@ -20,7 +20,7 @@ router.post('/add-product',
 );
 
 // GET edit product localhost:5000/edit-product/:productId
-router.get('/edit-product/:productId', adminController.getEditProduct);
+router.get('/edit-product/:productId', jwtAuth, adminController.getEditProduct);
 
 // POST edited product
 router.post('/edit-product',
@@ -29,12 +29,11 @@ router.post('/edit-product',
   body('price', 'Must be number').isNumeric(),
   body('description', 'Description must has more than 5 characters and less than 300 characters')
     .isLength({ min: 5, max: 300 }).trim(),
+  jwtAuth, 
   adminController.postEditedProduct
 );
 
 // POST deleted product
-router.post('/delete-product', adminController.postDeletedProduct);
-
-
+router.post('/delete-product', jwtAuth, adminController.postDeletedProduct);
 
 module.exports = router;
