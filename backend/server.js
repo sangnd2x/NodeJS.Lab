@@ -42,6 +42,11 @@ server.use('/images', express.static(path.join(__dirname, 'images')));
 server.use(authRoute);
 server.use(userRoute);
 
+server.use((error, req, res, next) => {
+  console.log(error)
+  res.status(error.httpStatusCode).json({ msg: 'There is an error' });
+})
+
 mongoose.connect(MONGODB_URI)
   .then(result => server.listen(5000))
   .catch(err => console.log(err));

@@ -10,6 +10,8 @@ const Login = () => {
     email: '',
     password: ''
   });
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,15 +23,27 @@ const Login = () => {
 
     axios.post('http://localhost:5000/login', user)
       .then(res => {
-        if (res.status === 200) {
-          console.log(res);
+        console.log(res);
+        if (res.status !== 200) {
+          return 
+        } else {
           localStorage.setItem('token', res.data.accessToken);
           navigate('/feed');
-        } else {
-          alert(res.statusText);
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        if (err.response.statusText.includes('email')) {
+          setEmailError(true);
+        } else {
+          setEmailError(false);
+        }
+
+        if (err.response.statusText.includes('password')) {
+          setPasswordError(true);
+        } else {
+          setPasswordError(false);
+        }
+      });
   }
 
   return (
@@ -39,11 +53,14 @@ const Login = () => {
         <form className='login-form'>
           <div className="form-control">
             <label htmlFor="email">Email</label>
-            <input type="text" name='email' onChange={(e) => handleChange(e)}/>
+            <input type="text" name='email'
+              onChange={(e) => handleChange(e)}
+              style={{border: emailError? '2px solid red' : ''}} />
           </div>
           <div className="form-control">
             <label htmlFor="password">Password</label>
-            <input type="password" name='password' onChange={(e) => handleChange(e)}/>
+            <input type="password" name='password' onChange={(e) => handleChange(e)}
+              style={{ border: passwordError ? '2px solid red' : '' }} />
           </div>
           <button className='login-btn' onClick={(e) => handleLogin(e)}>Login</button>
         </form>

@@ -1,0 +1,30 @@
+.postDetails {
+  display: grid;
+  place-items: center;
+  margin-top: 20px;
+}
+
+.postDetails-header, .postDetails-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: centers;
+  align-items: center;
+}
+
+.postDetails-header-title {
+  margin-bottom: 20px;
+}
+
+.postDetails-header-date {
+  margin-bottom: 20px;;
+}
+
+.postDetails-body>img {
+  max-width: 500px;
+  margin: 20px 0px;
+}
+
+hr {
+  border: 1px solid;
+  width: 500px;
+}

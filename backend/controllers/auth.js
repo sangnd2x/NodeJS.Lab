@@ -1,13 +1,19 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
 require('dotenv').config();
 
 // Sign up 
 exports.postSignUp = (req, res, next) => {
   const { email, name, password } = req.body;
+  const errors = validationResult(req);
 
-  User
+  if (!errors.isEmpty()) {
+    res.statusMessage = errors.array()[0].msg;
+    return res.status(422).end();
+  } else {
+    User
     .findOne({ email: email })
     .then(user => {
       if (user) {
@@ -29,30 +35,41 @@ exports.postSignUp = (req, res, next) => {
           })
       }
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+  }
 };
 
 exports.postLogin = (req, res, next) => {
   const { email, password } = req.body;
+  const errors = validationResult(req);
+  console.log(errors.array())
 
-  User.findOne({ email: email })
-    .then(user => {
-      if (!user) {
-        res.statusMessage = 'Email not found';
-        return res.status(404).end();
-      } else {
+  if (!errors.isEmpty()) {
+    res.statusMessage = errors.array()[0].msg;
+    return res.status(422).end();
+  } else {
+    User.findOne({ email: email })
+      .then(user => {
         bcrypt.compare(password, user.password)
           .then(isMatched => {
             if (!isMatched) {
               res.statusMessage = 'Wrong password';
               return res.status(400).end();
             } else {
-              const accessToken = jwt.sign(user.toJSON(), `${process.env.ACCESS_TOKEN_SECRET}`);
+              const accessToken = jwt.sign(user.toJSON(), `${process.env.TOKEN}`);
               res.statusMessage = 'Successfully logged in';
-              res.status(200).json({ accessToken : accessToken });
+              res.status(200).json({ accessToken: accessToken });
             }
-          })
-      }
-    })
-    .catch(err => console.log(err));
+          });
+      })
+      .catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+      });
+    }
 }
