@@ -31,6 +31,8 @@ const Feed = () => {
         setPosts(data.post);
       } else if (data.action === 'update') {
         setPosts(data.post);
+      } else if (data.action === 'delete') {
+        setRender(!render);
       }
     });
   }, [render]);

@@ -125,6 +125,9 @@ exports.deletePost = (req, res, next) => {
     })
     .then(user => {
       user.userPosts.pull(id);
+      Post.find().then(posts => {
+        io.getIO().emit('posts', { action: 'delete', post: posts });
+      })
       return user.save();
     })
     .then(result => {
