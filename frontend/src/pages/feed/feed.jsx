@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import openSocket from 'socket.io-client';
 import axios from 'axios';
 import Nav from '../../components/nav/nav';
 import Modal from '../../components/modal/modal';
@@ -18,11 +19,20 @@ const Feed = () => {
 
   useEffect(() => {
     axios.get('http://localhost:5000/posts', {headers})
-      .then(res => {
-        console.log(res);
-        setPosts(res.data);
-      })
-      .catch(err => console.log(err));
+    .then(res => {
+      console.log(res);
+      setPosts(res.data);
+    })
+    .catch(err => console.log(err));
+    
+    const socket = openSocket('http://localhost:5000');
+    socket.on('posts', data => {
+      if (data.action === 'create') {
+        setPosts(data.post);
+      } else if (data.action === 'update') {
+        setPosts(data.post);
+      }
+    });
   }, [render]);
 
   const toggle = (e) => {
@@ -74,7 +84,7 @@ const Feed = () => {
         </form>
       </div>
       <div className="post-container">
-        {posts.map((post, i) => (
+        {posts.length > 0 ? posts.map((post, i) => (
           <div className="post" key={i}>
             <div className="post-info">
               <h6 className="post-date">Created on {new Date(post.date).toLocaleDateString('en-gb')}</h6>
@@ -86,7 +96,7 @@ const Feed = () => {
               <button onClick={() => handleDelete(post._id)}>Delete</button>
             </div>
         </div>
-        ))}
+        )): <div>No post found</div>}
       </div>
     </div>
   )

@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 require('dotenv').config();
 
-const MONGODB_URI = 'mongodb+srv://sang2x:sang123@cluster0.j1wx6nb.mongodb.net/social';
+const MONGODB_URI = 'mongodb+srv://sang2x:123123123@cluster0.j1wx6nb.mongodb.net/social';
 
 const server = express();
 server.use(cors());
@@ -43,11 +43,17 @@ server.use(authRoute);
 server.use(userRoute);
 
 server.use((error, req, res, next) => {
-  console.log(error)
+  // console.log(error)
   res.status(error.httpStatusCode).json({ msg: 'There is an error' });
 })
 
 mongoose.connect(MONGODB_URI)
-  .then(result => server.listen(5000))
+  .then(result => {
+    const app = server.listen(5000);
+    const io = require('./socket').init(app);
+    io.on('connection', socket => {
+      console.log('from socket', 'Client connected');
+    });
+  })
   .catch(err => console.log(err));
 

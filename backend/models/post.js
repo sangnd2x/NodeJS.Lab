@@ -16,6 +16,11 @@ const postSchema = new Schema({
   },
   date: {
     type: Date
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 });
 

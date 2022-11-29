@@ -26,7 +26,7 @@ exports.postSignUp = (req, res, next) => {
               email: email,
               name: name,
               password: hashPass,
-              userPosts: { posts: [] }
+              userPosts: []
             });
             user.save().then(result => {
               res.statusMessage = 'New user created';
@@ -46,7 +46,7 @@ exports.postSignUp = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
-  console.log(errors.array())
+  // console.log(errors.array())
 
   if (!errors.isEmpty()) {
     res.statusMessage = errors.array()[0].msg;
